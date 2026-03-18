@@ -31,23 +31,21 @@ your *own* widgets via `AppWidgetProvider`, which is not what the spec requires.
 aggressively kill background apps. Mitigation: guide users to whitelist the app, request
 `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`, use persistent foreground notification.
 
-### iOS — Severely Limited (Near-Infeasible for Core Requirements)
+### iOS — Severely Limited by Default, but Options Exist
 
-| Capability | Status | Details |
+Standard third-party iOS APIs cannot fulfill the core requirements:
+
+| Capability | Standard APIs | Details |
 |---|---|---|
-| App open/close tracking | **NOT POSSIBLE** | No public API for third-party apps to monitor which apps a user opens. Screen Time API (`DeviceActivityMonitor`) uses opaque tokens, cannot export data, and is designed for parental controls only. |
-| Phone unlock detection | **NOT POSSIBLE** | No reliable public API. `protectedDataDidBecomeAvailable` is an unreliable proxy. |
-| Background service | **NOT POSSIBLE** | iOS suspends apps after ~30s in background. No equivalent to Android's foreground service. `BGAppRefreshTask` gives ~30s at OS-determined intervals. |
-| Survive reboot | **NOT POSSIBLE** | iOS does not allow third-party apps to auto-launch after reboot. |
-| Widget interactions | **NOT POSSIBLE** | Same as Android — no API for third-party widget monitoring. |
+| App open/close tracking | **BLOCKED** | No public API to monitor which apps a user opens in real-time |
+| Phone unlock detection | **BLOCKED** | No reliable public API |
+| Background service | **BLOCKED** | iOS suspends apps after ~30s. No persistent foreground service |
+| Survive reboot | **BLOCKED** | No auto-launch for third-party apps |
+| Widget interactions | **BLOCKED** | Same as Android — no API for third-party widget monitoring |
 
-**Bottom line:** iOS cannot fulfill any of the core requirements (unlock tracking, app usage
-monitoring, persistent background execution). This is by Apple's design for privacy.
-
-**What academic researchers do instead on iOS:**
-- Participants manually screenshot their Screen Time settings page
-- ESM/EMA self-report prompts
-- MDM-managed devices (does NOT provide usage analytics, only installed app lists)
+However, deep investigation revealed **several viable iOS paths** — see **Axis 4** below for
+the full iOS-specific analysis with 6 options ranging from Apple SensorKit (best) to
+Shortcuts-based logging (simplest).
 
 ---
 
@@ -260,57 +258,276 @@ Research team reads files from the channel.
 
 ---
 
-## Recommendation
+## Axis 4: iOS Deep Dive — Every Possible Path
 
-### Framework: Option A — Native Android (Kotlin)
+### iOS Option 1: Apple SensorKit (BEST — Purpose-Built for Academic Research)
 
-**Rationale:**
-1. iOS cannot fulfill any core requirement — building for iOS would be wasted effort
-2. The bmp-pathways-app reference is also native Android
-3. Direct API access eliminates plugin/bridge failure modes
-4. Simplest architecture = lowest risk for a research team
-5. If iOS is needed later, a limited companion app can be built separately, or migrate to KMP
+**Description**: Apple SensorKit (`SRDeviceUsageReport`) is a framework specifically designed
+for IRB-approved academic health/wellness research. It provides per-app usage duration,
+unlock counts, notification interactions, and more — data that NO other iOS API exposes.
 
-### Upload: Telegram Bot API (Option 1), with WhatsApp Share Sheet (Option 2) as fallback
+**What it provides:**
+- Total screen wakes and unlocks (with counts)
+- Total unlock duration (seconds)
+- **Per-app usage time** (seconds) with bundle identifiers (pseudonymized on iOS 15+)
+- App usage grouped by 29+ categories (Social, Games, Health, Productivity, etc.)
+- Notification interactions by category
+- Web usage by category
+- Additional sensors: call logs, message logs, keyboard metrics, accelerometer, location, etc.
 
-**Rationale:**
-1. Telegram Bot API enables zero-tap automated upload — critical for research data completeness
-2. No server at all — Telegram's infrastructure handles everything
-3. WhatsApp Share Sheet as a manual fallback for participants who prefer WhatsApp
-4. Both can coexist in the app — automated Telegram + manual WhatsApp share button
+**How to get access:**
+1. Submit research proposal to `sensorkitrequest@apple.com`
+2. Apple reviews → grants development entitlement
+3. Obtain IRB approval for your study
+4. Apple grants distribution entitlement
+5. Publish via App Store (standard review) or unlisted distribution
+6. Participants install, consent on-device to each sensor type
+
+**Proven at scale:**
+- **Intern Health Study** (Univ. of Michigan, 2023-24): 695 iPhone participants, 94% retention at 2 months
+- **Apple Heart & Movement Study**: Large-scale ongoing
+- Multiple published papers in PLOS ONE, PMC, Nature
+
+**Trade-offs:**
+- ✅ **Richest iOS usage data available** — nothing else comes close
+- ✅ Apple-sanctioned, App Store viable
+- ✅ Proven with hundreds of participants
+- ✅ No jailbreak, no MDM, no supervision required
+- ✅ Includes data far beyond what Android provides (call logs, keyboard metrics, etc.)
+- ❌ Apple's approval timeline is unpredictable (weeks to months)
+- ❌ Restricted to IRB-approved health/wellness research (not commercial)
+- ❌ iOS 15+ uses pseudonymized app identifiers (privacy tradeoff)
+- ❌ Requires iOS 14.0+
+
+**Risks**: Apple approval delays. Pseudonymized app IDs may reduce data utility.
+**Effort**: Medium (app development) + Variable (Apple approval process)
+
+---
+
+### iOS Option 2: Screen Time API (DeviceActivityMonitor → UserDefaults → Main App)
+
+**Description**: Use Apple's Screen Time framework to detect usage thresholds and relay
+timestamps to the main app. This is how production apps (Opal, ScreenZen, Clearspace) work.
+
+**Architecture (the "Kingstinct technique"):**
+1. Request FamilyControls entitlement from Apple (2-5 week approval)
+2. Use `DeviceActivityMonitor` with named threshold events (e.g., `minutes_reached_1`,
+   `minutes_reached_5`, `minutes_reached_10`)
+3. When `eventDidReachThreshold` fires, **write event name + timestamp to UserDefaults**
+   via App Group (this works — confirmed on real devices)
+4. Main app reads from shared UserDefaults, reconstructs approximate usage timeline
+5. `DeviceActivityReport` extension displays pretty per-app charts in-app (display only)
+6. Main app handles CSV generation and upload (Telegram/WhatsApp)
+
+**Key constraints:**
+- `DeviceActivityMonitor` extension: CAN read/write App Group UserDefaults, CANNOT make network calls
+- `DeviceActivityReport` extension: CAN read App Group, CANNOT write, CANNOT network
+- Maximum 20 simultaneous monitors
+- Minimum schedule interval: 15 minutes
+- Monitor extension memory limit: 6 MB
+- Up to 15-minute latency in Screen Time data updates (reported by Opal)
+
+**Distribution**: Unlisted App Store distribution — Apple explicitly supports this for
+"research studies." Full App Store review, but discoverable only via direct link.
+No tester limits, no 90-day expiry (unlike TestFlight).
+
+**Trade-offs:**
+- ✅ Official App Store app — professional, trustworthy for participants
+- ✅ Threshold-based timestamps give approximate usage data
+- ✅ Beautiful in-app display via DeviceActivityReport
+- ✅ No supervision or jailbreak needed
+- ✅ FamilyControls `.individual` mode — user manages own device
+- ❌ Data is **approximate** (threshold-based, not continuous app open/close events)
+- ❌ Cannot identify WHICH specific app caused a threshold (only the monitored group)
+- ❌ 20-monitor limit constrains per-app granularity
+- ❌ FamilyControls entitlement approval: 2-5 weeks, no tracking, no status page
+- ❌ Extension sandbox is fragile — Apple may tighten restrictions further
+- ❌ iOS 26 has known bugs with premature threshold firing
+
+**Risks**: Apple entitlement delays. Sandbox restrictions may tighten. Data granularity
+insufficient for research needs.
+**Effort**: Medium-High
+
+---
+
+### iOS Option 3: iOS Shortcuts Automations (No App Needed — Low-Tech)
+
+**Description**: Use iOS Personal Automations to trigger on app open/close and log timestamps
+to a CSV file in iCloud Drive. No custom app required — just the built-in Shortcuts app.
+
+**How it works:**
+1. Create a Personal Automation per app: trigger = "App → Is Opened"
+2. Action = "Append to Text File" → writes `app_name,timestamp` to a CSV in iCloud Drive
+3. Create a second automation per app: trigger = "App → Is Closed"
+4. Action = appends close timestamp
+5. iOS 17+: automations run immediately, no confirmation tap needed
+6. Notification banner can be silenced ("Notify When Run" = off)
+
+**Trade-offs:**
+- ✅ **Zero development effort** — uses built-in iOS features
+- ✅ No app needed, no entitlement, no App Store review
+- ✅ Runs immediately without user confirmation (iOS 17+)
+- ✅ Logs to iCloud Drive → accessible as CSV
+- ✅ Survives reboots (automations persist)
+- ✅ Can also POST to a URL (Telegram bot, webhook, etc.)
+- ❌ **One automation per app** — must be created manually by the participant
+- ❌ No API to create automations programmatically — user must set up each one
+- ❌ No "all apps" wildcard — if you want 30 apps, you need 60 automations
+- ❌ Cannot detect unlocks (no trigger for that)
+- ❌ "Is Closed" trigger may not always fire reliably
+- ❌ ~1-2 second latency
+
+**Risks**: Participant fatigue during setup. Missed events if automations break after iOS updates.
+**Effort**: Low (development), Medium (participant setup burden)
+
+---
+
+### iOS Option 4: macOS knowledgeC.db Sync (Richest Data, Requires a Mac)
+
+**Description**: iOS syncs Screen Time data to macOS when "Share across devices" is enabled.
+On macOS, the `knowledgeC.db` SQLite database contains **full per-app, per-session usage data
+with precise timestamps** — far richer than any iOS API provides.
+
+**How it works:**
+1. Participant enables "Share across devices" in Settings → Screen Time
+2. Participant has a Mac with the same iCloud account
+3. Python script (`ScreenTime2CSV` by Felix Kohlhas) queries:
+   ```sql
+   SELECT * FROM ZOBJECT WHERE ZSTREAMNAME = '/app/usage'
+   ```
+4. Returns: app bundle ID, usage duration (seconds), start/end timestamps, device model
+5. Data covers ~28 days
+
+**Trade-offs:**
+- ✅ **Richest per-app data available** — precise session-level timestamps
+- ✅ No app development needed — just a Python script
+- ✅ No jailbreak, no MDM, no entitlement
+- ✅ Proven methodology (Felix Kohlhas, forensics community)
+- ❌ **Requires participant to own a Mac** — major limitation
+- ❌ Participant must run the Python script (or you provide a packaged tool)
+- ❌ iOS 16+ migrating data to Biome format (less accessible)
+- ❌ Fragile across OS versions
+- ❌ Not scalable for large studies
+
+**Risks**: macOS requirement excludes many participants. Biome migration may break this approach.
+**Effort**: Low (scripting), but High (operational — requires Mac access per participant)
+
+---
+
+### iOS Option 5: Content Filter Network Extension (Proxy via Network Traffic)
+
+**Description**: Deploy a `NEFilterDataProvider` on supervised (MDM-enrolled) research devices.
+The filter observes all TCP/UDP flows and logs `sourceAppIdentifier` — which app made the
+network request — as a proxy for "which apps were active."
+
+**Trade-offs:**
+- ✅ Can see bundle identifiers of network-active apps with timestamps
+- ✅ System-level visibility, not limited by sandbox
+- ❌ **Requires supervised devices** (must be MDM-enrolled via Apple Configurator)
+- ❌ Only captures apps that generate network traffic (offline apps invisible)
+- ❌ Filter extension has severe sandbox: cannot write to disk or network
+- ❌ Communication with main app only via shared UserDefaults (fragile)
+- ❌ Complex architecture, hard to maintain
+- ❌ iOS 26's new `NEURLFilter` uses zero-knowledge bloom filter — cannot identify apps
+
+**Risks**: Supervision requirement makes this impractical outside lab settings.
+**Effort**: High
+
+---
+
+### iOS Option 6: App Privacy Report Export (7-Day Network Activity)
+
+**Description**: iOS's built-in App Privacy Report (Settings → Privacy → App Privacy Report)
+exports NDJSON with per-app network domain contacts and sensor access timestamps over 7 days.
+
+**Trade-offs:**
+- ✅ Machine-readable NDJSON export
+- ✅ Shows which apps contacted which domains and when
+- ✅ No app needed — built into iOS
+- ❌ Only 7-day window
+- ❌ No usage duration — only network contact timestamps
+- ❌ Requires manual export by participant
+- ❌ Indirect proxy (network activity ≠ foreground usage)
+
+**Risks**: Low data fidelity. Short retention window.
+**Effort**: Very Low (no development), Medium (manual participant process)
+
+---
+
+## iOS Options Comparison
+
+| Option | Data Quality | Unlock Detection | App-Level Granularity | Effort | Requires |
+|---|---|---|---|---|---|
+| **1. SensorKit** | **Excellent** | **Yes (counts)** | **Yes (pseudonymized)** | Medium + Apple approval | IRB approval |
+| **2. Screen Time API** | Approximate | No | Threshold-based groups | Medium-High | FamilyControls entitlement |
+| **3. Shortcuts** | Per-app open/close | No | Yes (manually configured) | Low dev / Medium setup | Participant effort |
+| **4. knowledgeC.db** | **Excellent** | Yes | **Yes (bundle IDs)** | Low dev | Mac + iCloud sync |
+| **5. Network Filter** | Partial (net only) | No | Yes (bundle IDs) | High | Supervised device (MDM) |
+| **6. Privacy Report** | Low (net contacts) | No | Yes (bundle IDs) | Very Low | Manual export |
+
+---
+
+## Revised Recommendation
+
+### Two-Track Architecture
+
+**Track 1 — Android: Native Kotlin (full passive tracking)**
+- Direct `UsageStatsManager`, `ForegroundService`, `BroadcastReceiver`
+- Full unlock detection, app open/close with timestamps
+- CSV per activation, automated Telegram upload + WhatsApp share fallback
+- Sideload via GitHub APK + optional Play Store listing
+
+**Track 2 — iOS: Depends on research context**
+
+| Your Situation | Best iOS Path | Data Quality |
+|---|---|---|
+| IRB-approved study | **SensorKit** — submit to `sensorkitrequest@apple.com` | Excellent |
+| No IRB / Apple rejects SensorKit | **Screen Time API** (Option 2) — FamilyControls entitlement | Approximate |
+| Quick pilot / no app budget | **Shortcuts** (Option 3) — participants self-configure | Per-app open/close |
+| Participants have Macs | **knowledgeC.db** (Option 4) — Python script | Excellent |
+
+### Framework Decision
+
+| iOS Path Chosen | Framework |
+|---|---|
+| SensorKit | Native Swift (iOS) + Native Kotlin (Android) — two apps |
+| Screen Time API | Consider KMP — shared logic, platform-specific tracking |
+| Shortcuts only | Native Kotlin (Android only) — no iOS app needed |
+
+### Upload: Telegram Bot API + WhatsApp Share Sheet
+
+Both coexist in the app:
+- **Telegram**: automated zero-tap upload via HTTP POST to bot channel
+- **WhatsApp**: manual share button as fallback for participants who prefer it
 
 ### Widget Tracking: Scoped Down
 
-**Rationale:**
-Widget interaction tracking is not possible on Android (or iOS) for third-party widgets.
-Recommend either:
-- (a) Drop the widget requirement entirely
-- (b) Track only the app's own widgets
-- (c) Use AccessibilityService (powerful but Google Play restricts it; acceptable for sideloaded research apps)
+Not possible on either platform for third-party widgets. Options:
+- (a) Drop the requirement
+- (b) Use AccessibilityService on Android (acceptable for sideloaded research apps)
 
 ---
 
 ## Open Questions for User
 
-1. **iOS**: Given that iOS fundamentally blocks all core tracking features, should we proceed
-   Android-only? Or do you want a limited iOS companion (e.g., ESM self-report prompts)?
+1. **IRB approval**: Is this for an IRB-approved academic study? This determines whether
+   SensorKit (best iOS path by far) is available to you.
 
-2. **Widget tracking**: This is technically infeasible for third-party widgets. Should we drop it,
-   or explore AccessibilityService (which can observe all UI interactions but is restricted by
-   Google Play and raises privacy concerns)?
+2. **iOS priority**: How critical is iOS coverage? Your options ranked:
+   - **(a)** SensorKit app — best data, needs IRB + Apple approval, unpredictable timeline
+   - **(b)** Screen Time API app — approximate data, FamilyControls entitlement (2-5 weeks)
+   - **(c)** Shortcuts automations — no app needed, participant setup burden
+   - **(d)** knowledgeC.db extraction — richest raw data, requires Mac
+   - **(e)** Skip iOS entirely, focus on Android
 
-3. **Telegram vs WhatsApp**: Telegram enables fully automated, zero-tap upload. WhatsApp
-   always requires manual user interaction (3-4 taps). Do you want both, or is one sufficient?
+3. **Widget tracking**: Drop it, or explore AccessibilityService (Android only)?
 
-4. **Distribution**: The bmp-pathways-app used sideloading (direct APK). Google is tightening
-   sideloading restrictions in 2026-2027 (developer identity verification). Do you want to
-   target Play Store, sideloading, or both?
+4. **Distribution**: Sideloading (GitHub APK), Play Store, or both?
+   For iOS: TestFlight (90-day builds, 10K testers) or unlisted App Store?
 
-5. **Research context**: Is this for an IRB-approved academic study? This affects whether
-   AccessibilityService and sideloading are acceptable, and whether you need consent flows
-   in the app.
+5. **Number of participants**: Affects distribution, security, and scale decisions.
 
-6. **Number of participants**: How many people will use this? This affects distribution method,
-   Telegram bot token security considerations, and whether Play Store listing is worthwhile.
+6. **Language**: App UI in French, English, or bilingual?
 
-7. **Language**: The PDF is in French — should the app UI be in French, English, or bilingual?
+7. **Timeline**: SensorKit approval can take months. Screen Time entitlement: 2-5 weeks.
+   Android app could be built in weeks. When do you need this?

@@ -1,6 +1,6 @@
 ---
 id: PB-001
-status: ready-to-implement
+status: in-progress
 created: 2026-03-18
 branch: PB-001-data-interview-app
 ---

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App -->
+    <string name="app_name">Data Interview</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_history">Historique</string>
+    <string name="nav_settings">Param\u00e8tres</string>
+    <string name="nav_permissions">Autorisations</string>
+
+    <!-- Main screen status -->
+    <string name="status_active">Collecte en cours</string>
+    <string name="status_inactive">Collecte arr\u00eat\u00e9e</string>
+    <string name="action_start">D\u00e9marrer</string>
+    <string name="action_stop">Arr\u00eater</string>
+    <string name="tracking_active">Collecte en cours</string>
+    <string name="tracking_stopped">Collecte arr\u00eat\u00e9e</string>
+
+    <!-- Schedule -->
+    <string name="schedule_activation">Programmer une activation</string>
+    <string name="start_date">Date de d\u00e9but</string>
+    <string name="end_date">Date de fin</string>
+    <string name="schedule_start_date">Date de d\u00e9but</string>
+    <string name="schedule_start_time">Heure de d\u00e9but</string>
+    <string name="schedule_end_date">Date de fin</string>
+    <string name="schedule_end_time">Heure de fin</string>
+    <string name="choose">Choisir</string>
+    <string name="confirm_schedule">Confirmer la programmation</string>
+    <string name="schedule_confirm">Programmer</string>
+    <string name="schedule_confirmed">Activation programm\u00e9e</string>
+    <string name="error_schedule_times">Veuillez s\u00e9lectionner les dates de d\u00e9but et de fin</string>
+    <string name="error_end_before_start">La date de fin doit \u00eatre apr\u00e8s la date de d\u00e9but</string>
+
+    <!-- History -->
+    <string name="history_title">Historique des activations</string>
+    <string name="history_empty">Aucune activation</string>
+    <string name="no_activations">Aucune activation</string>
+    <string name="history_view_csv">Voir le CSV</string>
+    <string name="history_duration">Dur\u00e9e</string>
+    <string name="history_events">\u00c9v\u00e9nements</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Param\u00e8tres</string>
+    <string name="settings_saved">Param\u00e8tres enregistr\u00e9s</string>
+    <string name="telegram_config">Configuration Telegram</string>
+    <string name="settings_telegram_config">Configuration Telegram</string>
+    <string name="bot_token">Token du bot</string>
+    <string name="settings_bot_token">Token du bot</string>
+    <string name="chat_id">ID du chat</string>
+    <string name="settings_chat_id">ID du chat</string>
+    <string name="save">Enregistrer</string>
+    <string name="settings_save">Enregistrer</string>
+    <string name="settings_auto_send">Envoi automatique</string>
+    <string name="settings_auto_send_desc">Envoyer le CSV automatiquement \u00e0 la fin de l\'activation</string>
+
+    <!-- Permissions -->
+    <string name="permissions_title">Autorisations requises</string>
+    <string name="perm_usage_access">Acc\u00e8s aux statistiques d\'utilisation</string>
+    <string name="perm_usage_access_desc">N\u00e9cessaire pour d\u00e9tecter les applications utilis\u00e9es</string>
+    <string name="perm_notification_access">Acc\u00e8s aux notifications</string>
+    <string name="perm_notification_access_desc">N\u00e9cessaire pour d\u00e9tecter la lecture de m\u00e9dias</string>
+    <string name="perm_notifications">Notifications</string>
+    <string name="perm_notifications_desc">Permet d\'afficher la notification de collecte en cours</string>
+    <string name="perm_battery">Optimisation de la batterie</string>
+    <string name="perm_battery_desc">D\u00e9sactiver l\'optimisation pour \u00e9viter l\'arr\u00eat de la collecte</string>
+    <string name="perm_granted">Accord\u00e9</string>
+    <string name="perm_not_granted">Non accord\u00e9</string>
+    <string name="perm_grant">Accorder</string>
+    <string name="permission_usage_stats">Acc\u00e8s aux statistiques d\'utilisation</string>
+    <string name="permission_notification_listener">Acc\u00e8s aux notifications</string>
+    <string name="permission_notifications">Notifications</string>
+    <string name="permission_battery_optimization">Optimisation de la batterie</string>
+    <string name="permission_granted">Accord\u00e9</string>
+    <string name="permission_not_granted">Non accord\u00e9</string>
+    <string name="permission_grant">Accorder</string>
+    <string name="permission_rationale">Cette autorisation est n\u00e9cessaire pour\u2026</string>
+
+    <!-- Service notification -->
+    <string name="notification_tracking">Data Interview \u2013 Collecte en cours</string>
+
+    <!-- CSV Viewer -->
+    <string name="csv_viewer_title">Visualisation CSV</string>
+    <string name="csv_col_interaction_type">type_interaction</string>
+    <string name="csv_col_time">heure</string>
+    <string name="csv_col_app_widget">nom_app_widget</string>
+    <string name="csv_col_close_time">heure_fermeture</string>
+    <string name="csv_col_widget_location">emplacement_widget</string>
+
+    <!-- Upload -->
+    <string name="upload_in_progress">Envoi en cours\u2026</string>
+    <string name="upload_success">Envoi r\u00e9ussi</string>
+    <string name="upload_failure">\u00c9chec de l\'envoi</string>
+    <string name="upload_telegram">Envoyer via Telegram</string>
+    <string name="send_telegram">Envoyer via Telegram</string>
+
+    <!-- General -->
+    <string name="cancel">Annuler</string>
+    <string name="confirm">Confirmer</string>
+    <string name="error">Erreur</string>
+    <string name="success">Succ\u00e8s</string>
+
+</resources>

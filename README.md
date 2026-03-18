@@ -1,6 +1,8 @@
 # Data Interview
 
-Application Android de recherche pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une etude academique approuvee par un comite d'ethique (IRB).
+Application Android de recherche pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une etude academique sur la sobriete numerique.
+
+> **Note :** Ce projet est en cours de developpement. L'approbation par un comite d'ethique (IRB) n'a pas encore ete obtenue. L'application n'est pas destinee a etre utilisee en dehors de tests internes tant que cette approbation n'est pas accordee.
 
 L'application enregistre les deverrouillages, l'utilisation des applications et les interactions avec les controles media, puis genere un fichier CSV par periode d'activation, envoye automatiquement via Telegram.
 
@@ -244,4 +246,4 @@ Les tests unitaires couvrent la generation CSV (5 tests dans `CsvGeneratorTest`)
 
 ## Licence
 
-Projet de recherche academique. Usage reserve aux participants de l'etude.
+Projet de recherche academique. Usage reserve aux tests internes en attendant l'approbation IRB.

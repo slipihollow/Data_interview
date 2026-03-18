@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.DataInterview" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.DataInterview" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>

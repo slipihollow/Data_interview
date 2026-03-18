@@ -1,0 +1,20 @@
+# Local properties (contains secrets)
+android/local.properties
+local.properties
+
+# Gradle
+.gradle/
+android/.gradle/
+android/build/
+android/app/build/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+
+# HEIC screenshots
+*.HEIC
+*.heic

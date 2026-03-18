@@ -81,6 +81,7 @@ class HistoryActivity : AppCompatActivity() {
             val durationText: TextView = view.findViewById(R.id.durationText)
             val eventCountText: TextView = view.findViewById(R.id.eventCountText)
             val statusText: TextView = view.findViewById(R.id.uploadStatusText)
+            val errorText: TextView = view.findViewById(R.id.uploadErrorText)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -104,11 +105,30 @@ class HistoryActivity : AppCompatActivity() {
 
             holder.eventCountText.text = "${activation.eventCount} \u00e9v\u00e9nements"
 
-            holder.statusText.text = when (activation.uploadStatus) {
-                "success" -> "\u2713 Envoy\u00e9"
-                "failed" -> "\u2717 \u00c9chec"
-                "pending" -> "\u231b En attente"
-                else -> activation.status
+            val uploadStatus = activation.uploadStatus
+            when {
+                uploadStatus == "success" -> {
+                    holder.statusText.text = "\u2713 Envoy\u00e9"
+                    holder.errorText.visibility = View.GONE
+                }
+                uploadStatus == "pending" -> {
+                    holder.statusText.text = "\u231b En attente"
+                    holder.errorText.visibility = View.GONE
+                }
+                uploadStatus == "encryption_failed" -> {
+                    holder.statusText.text = "\u2717 \u00c9chec"
+                    holder.errorText.text = "Chiffrement \u00e9chou\u00e9"
+                    holder.errorText.visibility = View.VISIBLE
+                }
+                uploadStatus?.startsWith("failed:") == true -> {
+                    holder.statusText.text = "\u2717 \u00c9chec"
+                    holder.errorText.text = uploadStatus.removePrefix("failed: ")
+                    holder.errorText.visibility = View.VISIBLE
+                }
+                else -> {
+                    holder.statusText.text = uploadStatus ?: activation.status
+                    holder.errorText.visibility = View.GONE
+                }
             }
 
             holder.itemView.setOnClickListener { onClick(activation) }

@@ -24,11 +24,11 @@ class TelegramUploader(
         .build()
 
     /**
-     * Upload CSV file to Telegram chat via Bot API.
-     * Returns true on success, false on failure.
+     * Upload file to Telegram chat via Bot API.
+     * Returns null on success, or an error message on failure.
      * Must be called from a background thread.
      */
-    fun upload(file: File, caption: String? = null): Boolean {
+    fun upload(file: File, caption: String? = null): String? {
         val url = "https://api.telegram.org/bot$botToken/sendDocument"
 
         val contentType = if (file.extension == "enc") "application/octet-stream" else "text/csv"
@@ -59,16 +59,16 @@ class TelegramUploader(
             response.use {
                 if (it.isSuccessful) {
                     Log.d(TAG, "Upload successful: ${it.code}")
-                    true
+                    null
                 } else {
                     val errorBody = it.body?.string() ?: "no body"
                     Log.e(TAG, "Upload failed: HTTP ${it.code} — $errorBody")
-                    false
+                    "HTTP ${it.code}: $errorBody"
                 }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Upload exception", e)
-            false
+            e.message ?: e.javaClass.simpleName
         }
     }
 }

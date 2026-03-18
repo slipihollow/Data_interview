@@ -38,10 +38,10 @@ CSV file
 
 ### Key Management
 
-- RSA-2048 public key stored in `gradle.properties` as a Base64 string
+- RSA-2048 public key stored in `gradle.properties` as Base64-encoded DER (X.509 SubjectPublicKeyInfo format)
 - Accessed at runtime via `BuildConfig.ENCRYPTION_PUBLIC_KEY`
 - Private key stays on the researcher's machine, never in the app
-- Adding team members: add additional public keys, encrypt AES key once per recipient
+- Multi-recipient support: future enhancement (v1 supports a single public key only)
 
 ### Cryptographic Primitives
 
@@ -57,15 +57,18 @@ All from standard Java/Android crypto APIs (`javax.crypto`, `java.security`). No
 
 **Constraint:** Only standard, public, trusted crypto libraries. Never custom or modified crypto.
 
+**Compatibility note:** AES-GCM is available on Android API 21+ but some early devices had buggy implementations. Test on a low-API emulator during QA. No proguard rules are needed — all crypto APIs are Android framework classes.
+
 ## Code Changes
 
 ### New Files
 
 1. **`CsvEncryptor.kt`** (`com.datainterview.app.upload`)
-   - Input: plain CSV `File` + Base64 public key string
-   - Output: encrypted `File` (`.enc` extension)
+   - Constructor takes Base64 public key string (same pattern as `TelegramUploader` taking credentials)
    - Single public method: `fun encrypt(csvFile: File): File`
+   - Returns encrypted `File` (`.enc` extension, written alongside the CSV)
    - Handles AES key generation, RSA wrapping, file assembly
+   - Deletes the plaintext CSV after successful encryption
 
 2. **`CsvEncryptorTest.kt`**
    - Verifies encrypt/decrypt round-trip with a test keypair
@@ -78,7 +81,7 @@ All from standard Java/Android crypto APIs (`javax.crypto`, `java.security`). No
 
 ### Modified Files
 
-1. **`ActivationManager.kt`** — after CSV generation, call `CsvEncryptor.encrypt()`, pass `.enc` file to `TelegramUploader`
+1. **`ActivationManager.kt`** — after CSV generation, call `CsvEncryptor.encrypt()`, pass `.enc` file to `TelegramUploader`. If encryption fails, do NOT upload the plaintext — log the error and set `uploadStatus = "encryption_failed"`. The `csvFilePath` field in the activation record will now point to the `.enc` file.
 2. **`TelegramUploader.kt`** — change content type from `text/csv` to `application/octet-stream`
 3. **`gradle.properties`** — add `ENCRYPTION_PUBLIC_KEY=<base64 RSA public key>`
 4. **`build.gradle.kts`** — expose `ENCRYPTION_PUBLIC_KEY` via `BuildConfig`
@@ -93,9 +96,10 @@ All from standard Java/Android crypto APIs (`javax.crypto`, `java.security`). No
 
 ```bash
 openssl genrsa -out private_key.pem 2048
-openssl rsa -in private_key.pem -pubout -out public_key.pem
-base64 -i public_key.pem  # paste into gradle.properties
+openssl rsa -in private_key.pem -pubout -outform DER | base64  # paste into gradle.properties
 ```
+
+The value in `gradle.properties` must be Base64-encoded DER (not PEM). The command above outputs DER directly and Base64-encodes it, avoiding double-encoding.
 
 ### Per-File Decryption
 
@@ -104,12 +108,9 @@ python decrypt.py --key private_key.pem --input data_interview_1_20260318.enc
 # -> outputs: data_interview_1_20260318.csv
 ```
 
-### Adding Team Members
+### Adding Team Members (Future Enhancement)
 
-1. Team member generates their own RSA keypair
-2. Sends their public key to you
-3. Add to `gradle.properties` as `ENCRYPTION_PUBLIC_KEY_2`
-4. App encrypts AES key once per public key, bundles all in `.enc` file
+Multi-recipient encryption is out of scope for v1. When needed, the file format and `CsvEncryptor` will be extended to support multiple public keys (encrypt the AES key once per recipient).
 
 ## Testing
 

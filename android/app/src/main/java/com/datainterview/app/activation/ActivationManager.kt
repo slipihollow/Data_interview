@@ -11,6 +11,7 @@ import com.datainterview.app.data.AppDatabase
 import com.datainterview.app.data.csv.CsvGenerator
 import com.datainterview.app.data.entity.Activation
 import com.datainterview.app.service.DataInterviewService
+import com.datainterview.app.upload.CsvEncryptor
 import com.datainterview.app.upload.TelegramUploader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -50,13 +51,37 @@ class ActivationManager(private val context: Context) {
         val events = db.eventDao().getByActivation(activation.id)
         val csvFile = CsvGenerator(context).generate(events, activation.id)
 
+        // Encrypt CSV (deletes plaintext on success)
+        val publicKey = BuildConfig.ENCRYPTION_PUBLIC_KEY
+        val fileToUpload = if (publicKey.isNotEmpty()) {
+            try {
+                CsvEncryptor(publicKey).encrypt(csvFile)
+            } catch (e: Exception) {
+                android.util.Log.e("ActivationManager", "Encryption failed", e)
+                // Do NOT upload plaintext — delete it and mark as failed
+                csvFile.delete()
+                db.activationDao().update(
+                    activation.copy(
+                        endTime = System.currentTimeMillis(),
+                        status = Activation.STATUS_COMPLETED,
+                        csvFilePath = null,
+                        eventCount = db.eventDao().countByActivation(activation.id),
+                        uploadStatus = "encryption_failed"
+                    )
+                )
+                return
+            }
+        } else {
+            csvFile
+        }
+
         // Update activation record
         val eventCount = db.eventDao().countByActivation(activation.id)
         db.activationDao().update(
             activation.copy(
                 endTime = System.currentTimeMillis(),
                 status = Activation.STATUS_COMPLETED,
-                csvFilePath = csvFile.absolutePath,
+                csvFilePath = fileToUpload.absolutePath,
                 eventCount = eventCount,
                 uploadStatus = "pending"
             )
@@ -67,7 +92,7 @@ class ActivationManager(private val context: Context) {
         val chatId = BuildConfig.TELEGRAM_CHAT_ID
         if (token.isNotEmpty() && chatId.isNotEmpty()) {
             val success = withContext(Dispatchers.IO) {
-                TelegramUploader(token, chatId).upload(csvFile)
+                TelegramUploader(token, chatId).upload(fileToUpload)
             }
             db.activationDao().update(
                 db.activationDao().getById(activation.id)!!.copy(

@@ -32,7 +32,8 @@ class TelegramUploader(
             .addFormDataPart(
                 "document",
                 file.name,
-                file.asRequestBody("text/csv".toMediaType())
+                val contentType = if (file.extension == "enc") "application/octet-stream" else "text/csv"
+                file.asRequestBody(contentType.toMediaType())
             )
             .apply {
                 if (caption != null) {

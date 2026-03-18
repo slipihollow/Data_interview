@@ -20,6 +20,7 @@ android {
         // Telegram credentials from gradle.properties
         buildConfigField("String", "TELEGRAM_BOT_TOKEN", "\"${project.findProperty("TELEGRAM_BOT_TOKEN") ?: ""}\"")
         buildConfigField("String", "TELEGRAM_CHAT_ID", "\"${project.findProperty("TELEGRAM_CHAT_ID") ?: ""}\"")
+        buildConfigField("String", "ENCRYPTION_PUBLIC_KEY", "\"${project.findProperty("ENCRYPTION_PUBLIC_KEY") ?: ""}\"")
     }
 
     buildFeatures {

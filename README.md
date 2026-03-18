@@ -8,21 +8,15 @@ L'application enregistre les deverrouillages, l'utilisation des applications et 
 
 ## Table des matieres
 
-- [Guide participant](#guide-participant)
-  - [Installation](#installation)
-  - [Autorisations requises](#autorisations-requises)
-  - [Utilisation](#utilisation)
-  - [Optimisation batterie par fabricant](#optimisation-batterie-par-fabricant)
-- [Guide chercheur](#guide-chercheur)
-  - [Configuration Telegram](#configuration-telegram)
-  - [Compilation](#compilation)
-  - [Format des donnees](#format-des-donnees)
-  - [Architecture technique](#architecture-technique)
-  - [Structure du projet](#structure-du-projet)
+- [Installation](#installation)
+- [Autorisations requises](#autorisations-requises)
+- [Utilisation](#utilisation)
+- [Optimisation batterie par fabricant](#optimisation-batterie-par-fabricant)
+- [Format des donnees](#format-des-donnees)
+- [Compilation](#compilation)
+- [Architecture technique](#architecture-technique)
 
 ---
-
-# Guide participant
 
 ## Installation
 
@@ -127,51 +121,6 @@ Certains fabricants arretent agressivement les applications en arriere-plan. Sui
 ### Autres fabricants
 
 Consultez [dontkillmyapp.com](https://dontkillmyapp.com) pour des instructions specifiques a votre modele.
-
----
-
-# Guide chercheur
-
-## Configuration Telegram
-
-Les identifiants Telegram sont integres dans l'APK a la compilation. Les participants n'ont rien a configurer — les CSV sont envoyes automatiquement dans votre groupe prive.
-
-### 1. Creer un bot Telegram
-
-1. Ouvrir Telegram et chercher **@BotFather**
-2. Envoyer `/newbot` et suivre les instructions
-3. Copier le **token du bot** (ex: `123456:ABC-DEF...`)
-
-### 2. Creer un groupe prive
-
-1. Creer un **nouveau groupe** Telegram (seul vous et vos co-chercheurs)
-2. Ajouter le bot au groupe
-3. Envoyer `/setprivacy` a @BotFather > selectionner votre bot > **Disable** (pour que le bot voie les messages du groupe)
-
-### 3. Obtenir l'ID du chat
-
-1. Envoyer un message dans le groupe
-2. Ouvrir dans un navigateur : `https://api.telegram.org/bot<TOKEN>/getUpdates`
-3. Reperer la valeur `"chat":{"id": ...}` — c'est votre **ID du chat** (nombre negatif)
-
-### 4. Configurer dans le projet
-
-Modifier le fichier `android/gradle.properties` :
-
-```properties
-TELEGRAM_BOT_TOKEN=votre_token_ici
-TELEGRAM_CHAT_ID=votre_chat_id_ici
-```
-
-Puis recompiler l'APK (voir [Compilation](#compilation)). Les identifiants seront integres dans `BuildConfig` et invisibles pour les participants.
-
-### 5. Verifier
-
-Ouvrir dans un navigateur (remplacer les valeurs) :
-```
-https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHAT_ID>&text=Bot+ready
-```
-Si `"ok": true` apparait et le message s'affiche dans le groupe, c'est pret.
 
 ---
 
@@ -290,28 +239,6 @@ DataInterviewApp                  Application, cree le canal de notification
 ```
 
 Les tests unitaires couvrent la generation CSV (5 tests dans `CsvGeneratorTest`).
-
----
-
-## Structure du projet
-
-```
-Data_interview/
-  android/                        Projet Android
-    app/
-      src/main/
-        java/com/datainterview/app/
-          activation/             Gestion des activations et alarmes
-          data/                   Room (entites, DAOs, base), generateur CSV
-          service/                Service de premier plan, receivers, trackers
-          ui/                     Activites (main, historique, parametres, autorisations)
-          upload/                 Envoi Telegram
-        res/                      Layouts, strings (francais), themes, drawables
-      src/test/                   Tests unitaires
-    build.gradle.kts              Configuration Gradle (app)
-  problems/PB-001-*/              Documentation du probleme (investigation, decision, plan)
-  commit.sh                       Script de workflow git
-```
 
 ---
 

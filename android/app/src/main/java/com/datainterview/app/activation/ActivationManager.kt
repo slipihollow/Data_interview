@@ -90,6 +90,7 @@ class ActivationManager(private val context: Context) {
         // Auto-upload via Telegram (credentials baked in at build time)
         val token = BuildConfig.TELEGRAM_BOT_TOKEN
         val chatId = BuildConfig.TELEGRAM_CHAT_ID
+        android.util.Log.d("ActivationManager", "Telegram token empty=${token.isEmpty()}, chatId empty=${chatId.isEmpty()}, file=${fileToUpload.name} exists=${fileToUpload.exists()}")
         if (token.isNotEmpty() && chatId.isNotEmpty()) {
             val success = withContext(Dispatchers.IO) {
                 TelegramUploader(token, chatId).upload(fileToUpload)

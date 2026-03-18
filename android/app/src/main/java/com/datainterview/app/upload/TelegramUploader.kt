@@ -5,6 +5,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
+import android.util.Log
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -12,6 +13,10 @@ class TelegramUploader(
     private val botToken: String,
     private val chatId: String
 ) {
+    companion object {
+        private const val TAG = "TelegramUploader"
+    }
+
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
@@ -49,9 +54,20 @@ class TelegramUploader(
             .build()
 
         return try {
+            Log.d(TAG, "Uploading ${file.name} (${file.length()} bytes) to chat $chatId")
             val response = client.newCall(request).execute()
-            response.use { it.isSuccessful }
-        } catch (_: Exception) {
+            response.use {
+                if (it.isSuccessful) {
+                    Log.d(TAG, "Upload successful: ${it.code}")
+                    true
+                } else {
+                    val errorBody = it.body?.string() ?: "no body"
+                    Log.e(TAG, "Upload failed: HTTP ${it.code} — $errorBody")
+                    false
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Upload exception", e)
             false
         }
     }

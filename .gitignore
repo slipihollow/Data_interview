@@ -18,3 +18,6 @@ android/app/build/
 # HEIC screenshots
 *.HEIC
 *.heic
+
+# Private keys
+*.pem

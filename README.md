@@ -8,17 +8,21 @@ L'application enregistre les deverrouillages, l'utilisation des applications et 
 
 ## Table des matieres
 
-- [Installation](#installation)
-- [Configuration Telegram](#configuration-telegram)
-- [Autorisations requises](#autorisations-requises)
-- [Utilisation](#utilisation)
-- [Optimisation batterie par fabricant](#optimisation-batterie-par-fabricant)
-- [Format des donnees](#format-des-donnees)
-- [Architecture technique](#architecture-technique)
-- [Compilation](#compilation)
-- [Structure du projet](#structure-du-projet)
+- [Guide participant](#guide-participant)
+  - [Installation](#installation)
+  - [Autorisations requises](#autorisations-requises)
+  - [Utilisation](#utilisation)
+  - [Optimisation batterie par fabricant](#optimisation-batterie-par-fabricant)
+- [Guide chercheur](#guide-chercheur)
+  - [Configuration Telegram](#configuration-telegram)
+  - [Compilation](#compilation)
+  - [Format des donnees](#format-des-donnees)
+  - [Architecture technique](#architecture-technique)
+  - [Structure du projet](#structure-du-projet)
 
 ---
+
+# Guide participant
 
 ## Installation
 
@@ -34,33 +38,6 @@ L'application enregistre les deverrouillages, l'utilisation des applications et 
 3. Si demande, autoriser l'installation depuis cette source
 4. Appuyer sur **Installer**
 5. Ouvrir l'application **Data Interview**
-
----
-
-## Configuration Telegram
-
-L'application envoie automatiquement les fichiers CSV a un chat Telegram via un bot. Configurez-le avant de commencer la collecte.
-
-### Creer un bot Telegram
-
-1. Ouvrir Telegram et chercher **@BotFather**
-2. Envoyer `/newbot` et suivre les instructions
-3. Copier le **token du bot** (ex: `123456:ABC-DEF...`)
-
-### Obtenir l'ID du chat
-
-1. Creer un groupe Telegram ou utiliser une conversation existante
-2. Ajouter votre bot au groupe
-3. Envoyer un message dans le groupe
-4. Ouvrir dans un navigateur : `https://api.telegram.org/bot<TOKEN>/getUpdates`
-5. Reperer la valeur `"chat":{"id": ...}` — c'est votre **ID du chat**
-
-### Configurer dans l'application
-
-1. Ouvrir Data Interview
-2. Appuyer sur **Parametres**
-3. Saisir le **Token du bot** et l'**ID du chat**
-4. Appuyer sur **Enregistrer**
 
 ---
 
@@ -153,6 +130,51 @@ Consultez [dontkillmyapp.com](https://dontkillmyapp.com) pour des instructions s
 
 ---
 
+# Guide chercheur
+
+## Configuration Telegram
+
+Les identifiants Telegram sont integres dans l'APK a la compilation. Les participants n'ont rien a configurer — les CSV sont envoyes automatiquement dans votre groupe prive.
+
+### 1. Creer un bot Telegram
+
+1. Ouvrir Telegram et chercher **@BotFather**
+2. Envoyer `/newbot` et suivre les instructions
+3. Copier le **token du bot** (ex: `123456:ABC-DEF...`)
+
+### 2. Creer un groupe prive
+
+1. Creer un **nouveau groupe** Telegram (seul vous et vos co-chercheurs)
+2. Ajouter le bot au groupe
+3. Envoyer `/setprivacy` a @BotFather > selectionner votre bot > **Disable** (pour que le bot voie les messages du groupe)
+
+### 3. Obtenir l'ID du chat
+
+1. Envoyer un message dans le groupe
+2. Ouvrir dans un navigateur : `https://api.telegram.org/bot<TOKEN>/getUpdates`
+3. Reperer la valeur `"chat":{"id": ...}` — c'est votre **ID du chat** (nombre negatif)
+
+### 4. Configurer dans le projet
+
+Modifier le fichier `android/gradle.properties` :
+
+```properties
+TELEGRAM_BOT_TOKEN=votre_token_ici
+TELEGRAM_CHAT_ID=votre_chat_id_ici
+```
+
+Puis recompiler l'APK (voir [Compilation](#compilation)). Les identifiants seront integres dans `BuildConfig` et invisibles pour les participants.
+
+### 5. Verifier
+
+Ouvrir dans un navigateur (remplacer les valeurs) :
+```
+https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHAT_ID>&text=Bot+ready
+```
+Si `"ok": true` apparait et le message s'affiche dans le groupe, c'est pret.
+
+---
+
 ## Format des donnees
 
 Chaque activation produit un fichier CSV avec le delimiteur `;` (point-virgule).
@@ -231,7 +253,7 @@ DataInterviewApp                  Application, cree le canal de notification
 
 - Base de donnees Room locale (`data_interview.db`)
 - Fichiers CSV dans le stockage interne de l'application (`files/csv/`)
-- Configuration Telegram dans `SharedPreferences`
+- Identifiants Telegram integres via `BuildConfig` (configures dans `gradle.properties`)
 
 ---
 

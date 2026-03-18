@@ -63,12 +63,24 @@ class PermissionsActivity : AppCompatActivity() {
         ))
 
         // 2. Notification Listener (for MediaSessionManager)
+        val notificationListenerGranted = isNotificationListenerGranted()
         permissions.add(PermissionItem(
             name = getString(R.string.perm_notification_access),
             description = getString(R.string.perm_notification_access_desc),
-            granted = isNotificationListenerGranted(),
+            granted = notificationListenerGranted,
             action = { openNotificationListenerSettings() }
         ))
+
+        // 2b. Restricted settings guide (Android 13+ sideloaded apps)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !notificationListenerGranted) {
+            permissions.add(PermissionItem(
+                name = getString(R.string.perm_restricted_settings),
+                description = getString(R.string.perm_restricted_settings_desc),
+                granted = false,
+                action = { openAppInfoSettings() },
+                buttonText = getString(R.string.perm_restricted_settings_action)
+            ))
+        }
 
         // 3. POST_NOTIFICATIONS (Android 13+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -136,6 +148,13 @@ class PermissionsActivity : AppCompatActivity() {
         startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
     }
 
+    private fun openAppInfoSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.parse("package:$packageName")
+        }
+        startActivity(intent)
+    }
+
     private fun requestBatteryOptimization() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
@@ -154,7 +173,8 @@ class PermissionsActivity : AppCompatActivity() {
         val name: String,
         val description: String,
         val granted: Boolean,
-        val action: () -> Unit
+        val action: () -> Unit,
+        val buttonText: String? = null
     )
 
     private class PermissionsAdapter(
@@ -186,7 +206,7 @@ class PermissionsActivity : AppCompatActivity() {
                 holder.statusText.text = holder.itemView.context.getString(R.string.perm_not_granted)
                 holder.statusText.setTextColor(0xFFF44336.toInt())
                 holder.actionButton.visibility = View.VISIBLE
-                holder.actionButton.text = holder.itemView.context.getString(R.string.perm_grant)
+                holder.actionButton.text = item.buttonText ?: holder.itemView.context.getString(R.string.perm_grant)
                 holder.actionButton.setOnClickListener { item.action() }
             }
         }

@@ -31,21 +31,27 @@ your *own* widgets via `AppWidgetProvider`, which is not what the spec requires.
 aggressively kill background apps. Mitigation: guide users to whitelist the app, request
 `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`, use persistent foreground notification.
 
-### iOS — Severely Limited by Default, but Options Exist
+### iOS — Severely Limited via Standard APIs, but Feasible via SensorKit
 
 Standard third-party iOS APIs cannot fulfill the core requirements:
 
 | Capability | Standard APIs | Details |
 |---|---|---|
 | App open/close tracking | **BLOCKED** | No public API to monitor which apps a user opens in real-time |
-| Phone unlock detection | **BLOCKED** | No reliable public API |
+| Phone unlock detection | **BLOCKED** | No reliable public API (but see counter-investigation) |
 | Background service | **BLOCKED** | iOS suspends apps after ~30s. No persistent foreground service |
 | Survive reboot | **BLOCKED** | No auto-launch for third-party apps |
 | Widget interactions | **BLOCKED** | Same as Android — no API for third-party widget monitoring |
 
-However, deep investigation revealed **several viable iOS paths** — see **Axis 4** below for
-the full iOS-specific analysis with 6 options ranging from Apple SensorKit (best) to
-Shortcuts-based logging (simplest).
+**However**, a counter-investigation using peer-reviewed academic sources revealed that
+**Apple SensorKit** (a research-specific framework, iOS 14+) provides passive, OS-managed
+collection of device usage data including unlock counts, app usage by bundle identifier,
+and screen time — fulfilling most core PB-001 requirements. Additionally, the Beiwe platform
+(Harvard) has been detecting iOS lock/unlock events in production since 2016.
+
+**See:** [Counter-Investigation: iOS Feasibility](./counter-investigation-ios.md) for full
+analysis with 9 peer-reviewed sources and 3 validated research platforms (academic validation
+of the approaches documented in Axis 4 below).
 
 ---
 

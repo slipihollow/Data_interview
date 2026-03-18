@@ -26,13 +26,14 @@ class TelegramUploader(
     fun upload(file: File, caption: String? = null): Boolean {
         val url = "https://api.telegram.org/bot$botToken/sendDocument"
 
+        val contentType = if (file.extension == "enc") "application/octet-stream" else "text/csv"
+
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("chat_id", chatId)
             .addFormDataPart(
                 "document",
                 file.name,
-                val contentType = if (file.extension == "enc") "application/octet-stream" else "text/csv"
                 file.asRequestBody(contentType.toMediaType())
             )
             .apply {

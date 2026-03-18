@@ -43,7 +43,7 @@ def decrypt(private_key_path: str, enc_path: str) -> None:
     aes_key = private_key.decrypt(
         enc_key,
         padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA1()),
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
             label=None,
         ),

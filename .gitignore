@@ -21,3 +21,6 @@ android/app/build/
 
 # Private keys
 *.pem
+
+# Debug screenshots
+screenshot-debug/

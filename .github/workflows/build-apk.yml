@@ -23,7 +23,10 @@ jobs:
 
       - name: Build debug APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: ./gradlew assembleDebug -PTELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN" -PTELEGRAM_CHAT_ID="$TELEGRAM_CHAT_ID"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

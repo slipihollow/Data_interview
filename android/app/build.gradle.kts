@@ -16,6 +16,14 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Telegram credentials from gradle.properties
+        buildConfigField("String", "TELEGRAM_BOT_TOKEN", "\"${project.findProperty("TELEGRAM_BOT_TOKEN") ?: ""}\"")
+        buildConfigField("String", "TELEGRAM_CHAT_ID", "\"${project.findProperty("TELEGRAM_CHAT_ID") ?: ""}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

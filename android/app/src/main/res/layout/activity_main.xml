@@ -141,14 +141,6 @@
             android:layout_marginBottom="8dp" />
 
         <Button
-            android:id="@+id/settingsButton"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/nav_settings"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_marginBottom="8dp" />
-
-        <Button
             android:id="@+id/permissionsButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"

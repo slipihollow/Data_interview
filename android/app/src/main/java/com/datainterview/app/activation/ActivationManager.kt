@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.content.ContextCompat
+import com.datainterview.app.BuildConfig
 import com.datainterview.app.data.AppDatabase
 import com.datainterview.app.data.csv.CsvGenerator
 import com.datainterview.app.data.entity.Activation
@@ -61,10 +62,10 @@ class ActivationManager(private val context: Context) {
             )
         )
 
-        // Auto-upload via Telegram if configured
-        val token = prefs.getString("telegram_bot_token", null)
-        val chatId = prefs.getString("telegram_chat_id", null)
-        if (token != null && chatId != null) {
+        // Auto-upload via Telegram (credentials baked in at build time)
+        val token = BuildConfig.TELEGRAM_BOT_TOKEN
+        val chatId = BuildConfig.TELEGRAM_CHAT_ID
+        if (token.isNotEmpty() && chatId.isNotEmpty()) {
             val success = withContext(Dispatchers.IO) {
                 TelegramUploader(token, chatId).upload(csvFile)
             }

@@ -14,7 +14,6 @@ import com.datainterview.app.R
 import com.datainterview.app.activation.ActivationManager
 import com.datainterview.app.ui.history.HistoryActivity
 import com.datainterview.app.ui.permissions.PermissionsActivity
-import com.datainterview.app.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toggleButton: Button
     private lateinit var scheduleButton: Button
     private lateinit var historyButton: Button
-    private lateinit var settingsButton: Button
     private lateinit var permissionsButton: Button
     private lateinit var scheduleStartText: TextView
     private lateinit var scheduleEndText: TextView
@@ -55,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         toggleButton = findViewById(R.id.toggleButton)
         scheduleButton = findViewById(R.id.scheduleButton)
         historyButton = findViewById(R.id.historyButton)
-        settingsButton = findViewById(R.id.settingsButton)
         permissionsButton = findViewById(R.id.permissionsButton)
         scheduleSection = findViewById(R.id.scheduleSection)
         scheduleStartText = findViewById(R.id.scheduleStartText)
@@ -67,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         toggleButton.setOnClickListener { toggleActivation() }
         scheduleButton.setOnClickListener { toggleScheduleSection() }
         historyButton.setOnClickListener { startActivity(Intent(this, HistoryActivity::class.java)) }
-        settingsButton.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         permissionsButton.setOnClickListener { startActivity(Intent(this, PermissionsActivity::class.java)) }
         scheduleStartButton.setOnClickListener { pickDateTime(true) }
         scheduleEndButton.setOnClickListener { pickDateTime(false) }

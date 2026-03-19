@@ -22,5 +22,9 @@ android/app/build/
 # Private keys
 *.pem
 
+# Standalone decryptor (contains embedded private key)
+decrypt_gui.py
+Decryptor.command
+
 # Debug screenshots
 screenshot-debug/

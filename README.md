@@ -1,16 +1,17 @@
 # Data Interview
 
-Application Android de recherche pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une etude academique sur la sobriete numerique conçu dans le cadre d'une thèse en psychologie sociale de l'Université de Lausanne.
+Application Android conçu comme un outil de collecte de données pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une thèse en psychologie sociale de l'Université de Lausanne.
 
-> **Note :** Ce projet est en cours de developpement. L'approbation par un comite d'ethique (IRB) n'a pas encore ete obtenue. L'application n'est pas destinee a etre utilisee en dehors de tests internes tant que cette approbation n'est pas accordee.
+Elle enregistre les déverrouillages, l'utilisation des applications et les interactions avec les controles media, puis génère un fichier CSV chiffré par periode d'activation, envoyé automatiquement à l'équipe de recherche via Telegram.
 
-L'application enregistre les deverrouillages, l'utilisation des applications et les interactions avec les controles media, puis genere un fichier CSV chiffre par periode d'activation, envoye automatiquement via Telegram.
+> **Note :** Ce projet est en cours de développement. L'application n'est destinée à aucune utilisation en dehors de tests internes pour le moment.
+
 
 ---
 
-## Table des matieres
+## Table des matières
 
-### Participant
+### destinée aux participant.e.s
 
 - [Installation](#installation)
 - [Autorisations requises](#autorisations-requises)
@@ -19,7 +20,7 @@ L'application enregistre les deverrouillages, l'utilisation des applications et 
 - [Format des donnees collectees](#format-des-donnees-collectees)
 - [Confidentialite et securite](#confidentialite-et-securite)
 
-### Chercheur
+### Déstinée aux Chercheur.euse.s
 
 - [Architecture technique](#architecture-technique)
 - [Pipeline de collecte](#pipeline-de-collecte)
@@ -34,7 +35,7 @@ L'application enregistre les deverrouillages, l'utilisation des applications et 
 
 ---
 
-# Guide participant
+# Guide de participation
 
 Tout ce qu'il faut savoir pour installer, configurer et utiliser l'application.
 
@@ -42,15 +43,15 @@ Tout ce qu'il faut savoir pour installer, configurer et utiliser l'application.
 
 ## Installation
 
-### Prerequis
+### Prérequis
 
 - Smartphone Android 5.0 (Lollipop) ou superieur
 - Autoriser l'installation depuis des sources inconnues (l'application n'est pas sur le Play Store)
 
-### Etapes
+### Étapes
 
-1. Telecharger le fichier APK depuis la section [Releases](../../releases) de ce depot
-2. Ouvrir le fichier APK sur votre telephone
+1. Télécharger le fichier APK depuis la section [Releases](../../releases) de ce dépôt
+2. Ouvrir le fichier APK sur votre téléphone
 3. Si demande, autoriser l'installation depuis cette source
 4. Appuyer sur **Installer**
 5. Ouvrir l'application **Data Interview**
@@ -59,15 +60,15 @@ Tout ce qu'il faut savoir pour installer, configurer et utiliser l'application.
 
 ## Autorisations requises
 
-L'application necessite plusieurs autorisations systeme pour fonctionner correctement. Sans ces autorisations, la collecte sera incomplete ou impossible. Un ecran de configuration integre guide l'utilisateur etape par etape.
+L'application nécessite plusieurs autorisations système pour fonctionner correctement. Sans ces autorisations, la collecte sera incomplète ou impossible. Un écran de configuration intégré guide l'utilisateur étape par étape.
 
-| Autorisation | Pourquoi c'est necessaire | Comment l'accorder |
+| Autorisation | Pourquoi est-ce nécessaire | Comment l'accorder |
 |---|---|---|
-| **Acces aux statistiques d'utilisation** | Permet de detecter quelles applications sont ouvertes et fermees | Parametres > Acces aux donnees d'utilisation > Data Interview |
-| **Acces aux notifications** | Permet de detecter les controles media (lecture, pause, suivant, precedent) sur l'ecran de verrouillage | Parametres > Acces aux notifications > Data Interview |
-| **Parametres restreints** (Android 13+ uniquement) | Necessaire pour les applications installees hors Play Store afin de debloquer les autorisations ci-dessus | Parametres > Applications > Data Interview > Autoriser les parametres restreints |
+| **Accès aux statistiques d'utilisation** | Permet de détecter quelles applications sont ouvertes et fermées | Paramètres > Accès aux données d'utilisation > Data Interview |
+| **Accès aux notifications** | Permet de détecter les contrôles media (lecture, pause, suivant, précèdent) sur l'écran de verrouillage | Paramètres > Accès aux notifications > Data Interview |
+| **Paramètres restreints** (Android 13+ uniquement) | Nécessaire pour les applications installées hors Play Store afin de débloquer les autorisations ci-dessus | Paramètres > Applications > Data Interview > Autoriser les paramètres restreints |
 | **Notifications** (Android 13+ uniquement) | Permet d'afficher la notification permanente indiquant que la collecte est en cours | Accepter la demande de l'application |
-| **Optimisation de la batterie** | Empeche Android d'arreter la collecte en arriere-plan pour economiser la batterie | Accepter la demande de desactivation |
+| **Optimisation de la batterie** | Empêche Android d'arrêter la collecte en arrière-plan pour économiser la batterie | Accepter la demande de désactivation |
 
 ### Comment faire
 

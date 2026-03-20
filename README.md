@@ -74,11 +74,12 @@ L'application nécessite plusieurs autorisations système pour fonctionner corre
 
 1. Ouvrir Data Interview
 2. Appuyer sur le bouton **Autorisations**
-3. L'ecran affiche chaque autorisation avec son statut (accordee ou non)
-4. Pour chaque autorisation non accordee, appuyer sur **Accorder** et suivre les instructions a l'ecran
-5. Revenir dans l'application — le statut se met a jour automatiquement
+3. L'écran affiche chaque autorisation avec son statut (accordée ou non)
+4. Pour chaque autorisation non accordée, appuyer sur **Accorder** et suivre les instructions a l'écran
+5. Revenir dans l'application — le statut se met à jour automatiquement
 
-> **Important :** Si une autorisation semble deja accordee mais ne fonctionne pas, essayez de la revoquer puis de la re-accorder.
+> **Important :** Si une autorisation semble déjà accordée mais ne fonctionne pas, essayez de la révoquer puis de la réaccorder.
+
 
 ---
 
@@ -87,56 +88,55 @@ L'application nécessite plusieurs autorisations système pour fonctionner corre
 ### Demarrer une collecte manuelle
 
 1. Ouvrir Data Interview
-2. Verifier que toutes les autorisations sont accordees (indicateur vert sur l'ecran **Autorisations**)
-3. Appuyer sur **Demarrer**
+2. Vérifier que toutes les autorisations sont accordées (indicateur vert sur l'écran **Autorisations**)
+3. Appuyer sur **Démarrer**
 4. Une notification permanente apparait : *"Data Interview — Collecte en cours"*
-5. **Utiliser le telephone normalement** — l'application fonctionne en arriere-plan de maniere silencieuse
+5. **Utiliser le téléphone normalement** — l'application fonctionne en arrière-plan de manière silencieuse
 
-> La notification permanente est normale et necessaire : elle empeche Android de fermer l'application. Ne la supprimez pas.
+> La notification permanente est normale et nécessaire : elle empêche Android de fermer l'application. Ne la supprimez pas.
 
 ### Arreter la collecte
 
 1. Ouvrir Data Interview
-2. Appuyer sur **Arreter**
-3. L'application genere le fichier de donnees, le chiffre, et l'envoie automatiquement au chercheur via Telegram
-4. L'ecran principal indique *"Collecte arretee"*
+2. Appuyer sur **Arrêter**
+3. L'application génère le fichier de données, le chiffre, et l'envoie automatiquement au chercheur via Telegram
+4. L'écran principal indique *"Collecte arrêtée"*
 
 ### Programmer une collecte
 
-Si vous souhaitez que la collecte demarre et s'arrete automatiquement a des horaires precis :
+Si vous souhaitez que la collecte démarre et s'arrête automatiquement a des horaires précis :
 
 1. Appuyer sur **Programmer une activation**
-2. Selectionner la **date et heure de debut**
-3. Selectionner la **date et heure de fin**
+2. Sélectionner la **date et heure de début**
+3. Sélectionner la **date et heure de fin**
 4. Appuyer sur **Confirmer la programmation**
-5. La collecte demarrera et s'arretera automatiquement aux horaires choisis — aucune intervention necessaire
+5. La collecte démarrera et s'arrêtera automatiquement aux horaires choisis — aucune intervention nécessaire
 
 ### Consulter l'historique
 
 1. Appuyer sur **Historique**
-2. Chaque collecte passee affiche :
-   - Dates de debut et de fin
-   - Duree totale
-   - Nombre d'evenements enregistres
-   - Statut d'envoi : **Envoye**, **En attente** ou **Echec**
-3. Appuyer sur une collecte pour visualiser le detail des donnees sous forme de tableau
+2. Chaque collecte passée affiche :
+   - Dates de début et de fin
+   - Durée totale
+   - Nombre d'évènements enregistres
+   - Statut d'envoi : **Envoyé**, **En attente** ou **Echec**
+3. Appuyer sur une collecte pour visualiser le détail des donnees sous forme de tableau
 
-### Apres un redemarrage du telephone
+### Apres un redémarrage du téléphone
 
-L'application redemarre automatiquement la collecte si elle etait en cours avant le redemarrage. **Aucune action n'est necessaire.**
+L'application redémarre automatiquement la collecte si elle était en cours avant le redémarrage. **Aucune action n'est nécessaire.**
 
-### En cas de probleme
+### En cas de problème
 
-- **La collecte semble s'arreter toute seule** : verifiez les reglages d'optimisation de batterie (section suivante)
-- **Le statut d'envoi affiche "Echec"** : verifiez que le telephone est connecte a Internet. Le fichier reste stocke localement et peut etre renvoyé
-- **Aucun evenement n'est enregistre** : verifiez que toutes les autorisations sont accordees
+- **La collecte semble s'arrêter toute seule** : vérifiez les réglages d'optimisation de batterie (section suivante)
+- **Le statut d'envoi affiche "Echec"** : vérifiez que le téléphone est connecté à Internet. Le fichier reste stocké localement et peut être renvoyé
+- **Aucun évènements n'est enregistré** : vérifiez que toutes les autorisations sont accordées
 
 ---
 
 ## Optimisation batterie par fabricant
 
-Certains fabricants arretent agressivement les applications en arriere-plan. **Cette etape est cruciale** pour garantir une collecte continue. Suivez les instructions specifiques a votre telephone :
-
+Certains fabricants arrêtent agressivement les applications en arrière-plan. **Cette étape est cruciale** pour garantir une collecte continue. Suivez les instructions spécifiques à votre téléphone :
 ### Samsung
 
 1. Parametres > Entretien de l'appareil > Batterie

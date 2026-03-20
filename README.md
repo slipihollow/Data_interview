@@ -1,6 +1,6 @@
 # Data Interview
 
-Application Android de recherche pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une etude academique sur la sobriete numerique.
+Application Android de recherche pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une etude academique sur la sobriete numerique conçu dans le cadre d'une thèse en psychologie sociale de l'Université de Lausanne.
 
 > **Note :** Ce projet est en cours de developpement. L'approbation par un comite d'ethique (IRB) n'a pas encore ete obtenue. L'application n'est pas destinee a etre utilisee en dehors de tests internes tant que cette approbation n'est pas accordee.
 

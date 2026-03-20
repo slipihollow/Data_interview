@@ -1,6 +1,6 @@
 # Data Interview
 
-Application Android conçu comme un outil de collecte de données pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une thèse en psychologie sociale de l'Université de Lausanne.
+Application Android conçue comme un outil de collecte de données pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une thèse en psychologie sociale de l'Université de Lausanne.
 
 Elle enregistre les déverrouillages, l'utilisation des applications et les interactions avec les controles media, puis génère un fichier CSV chiffré par periode d'activation, envoyé automatiquement à l'équipe de recherche via Telegram.
 

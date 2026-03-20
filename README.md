@@ -512,34 +512,44 @@ En cas d'absence des identifiants de compilation, l'ecran **Parametres** de l'ap
 
 ## Dechiffrement et analyse
 
-### Script `decrypt.py`
+### Script `decrypt_gui.py`
 
-Le script Python `decrypt.py` permet au chercheur de dechiffrer les fichiers `.enc` recus via Telegram et de generer un rapport d'analyse.
+Le script Python `decrypt_gui.py` permet au chercheur de dechiffrer les fichiers `.enc` recus via Telegram et de generer un rapport d'analyse. Il fonctionne en mode GUI (glisser-deposer) ou en ligne de commande.
 
 #### Prerequis
 
 ```bash
-pip install cryptography
+pip install cryptography tkinterdnd2
 ```
 
 #### Utilisation
 
 ```bash
-python decrypt.py --key private_key.pem --input fichier.enc
+# Mode GUI (glisser-deposer ou bouton Browse)
+python decrypt_gui.py
+
+# Mode ligne de commande
+python decrypt_gui.py --input fichier.enc
 ```
 
-- `--key` : chemin vers la cle privee RSA au format PEM
-- `--input` : chemin vers le fichier `.enc` a dechiffrer
-- **Sortie** : un fichier `.csv` au meme emplacement que le `.enc`
+- `--input` : chemin vers le fichier `.enc` a dechiffrer (mode CLI, sans GUI)
+- **Sortie** : deux fichiers au meme emplacement que le `.enc` :
+  - `fichier.csv` — pour Excel (delimiteur `;`, BOM UTF-8, rapport en en-tete)
+  - `fichier_R.csv` — pour R (delimiteur `,`, pas de commentaires, donnees uniquement)
+
+```r
+# Chargement dans R
+df <- read.csv("fichier_R.csv")
+```
 
 #### Etapes du dechiffrement
 
-1. Chargement de la cle privee RSA depuis le fichier PEM
+1. Chargement de la cle privee RSA (embarquee dans le script ou via fichier PEM)
 2. Lecture du fichier `.enc` selon le format binaire decrit ci-dessus (longueur de cle, cle chiffree, IV, texte chiffre)
 3. Dechiffrement de la cle AES avec RSA-OAEP (SHA-256, MGF1-SHA-256)
 4. Dechiffrement du CSV avec AES-256-GCM
 5. Enrichissement du CSV avec des metriques calculees (voir ci-dessous)
-6. Ecriture du fichier `.csv` final
+6. Ecriture du fichier Excel CSV (`;`, BOM UTF-8, avec rapport) et du fichier R CSV (`,`, donnees uniquement)
 
 #### Rapport de sobriete numerique
 

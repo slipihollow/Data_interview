@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -14,6 +16,7 @@ import com.datainterview.app.R
 import com.datainterview.app.activation.ActivationManager
 import com.datainterview.app.ui.history.HistoryActivity
 import com.datainterview.app.ui.permissions.PermissionsActivity
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -28,8 +31,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var activationManager: ActivationManager
     private val scope = CoroutineScope(Dispatchers.Main + Job())
 
+    private lateinit var participantIdInput: TextInputEditText
     private lateinit var statusText: TextView
     private lateinit var toggleButton: Button
+    private lateinit var capture1hButton: Button
+    private lateinit var capture24hButton: Button
     private lateinit var scheduleButton: Button
     private lateinit var historyButton: Button
     private lateinit var permissionsButton: Button
@@ -43,14 +49,19 @@ class MainActivity : AppCompatActivity() {
     private var scheduledStartTime: Long = 0
     private var scheduledEndTime: Long = 0
 
+    private val prefs by lazy { getSharedPreferences("data_interview", MODE_PRIVATE) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         activationManager = ActivationManager(this)
 
+        participantIdInput = findViewById(R.id.participantIdInput)
         statusText = findViewById(R.id.statusText)
         toggleButton = findViewById(R.id.toggleButton)
+        capture1hButton = findViewById(R.id.capture1hButton)
+        capture24hButton = findViewById(R.id.capture24hButton)
         scheduleButton = findViewById(R.id.scheduleButton)
         historyButton = findViewById(R.id.historyButton)
         permissionsButton = findViewById(R.id.permissionsButton)
@@ -61,7 +72,26 @@ class MainActivity : AppCompatActivity() {
         scheduleEndButton = findViewById(R.id.scheduleEndButton)
         scheduleConfirmButton = findViewById(R.id.scheduleConfirmButton)
 
+        // Restore saved participant ID
+        val savedId = prefs.getString("participant_id", null)
+        if (!savedId.isNullOrBlank()) {
+            participantIdInput.setText(savedId)
+        }
+
+        // Save participant ID on change and update button states
+        participantIdInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val id = s?.toString()?.trim() ?: ""
+                prefs.edit().putString("participant_id", id).apply()
+                updateActionButtonsEnabled()
+            }
+        })
+
         toggleButton.setOnClickListener { toggleActivation() }
+        capture1hButton.setOnClickListener { startTimedCapture(1) }
+        capture24hButton.setOnClickListener { startTimedCapture(24) }
         scheduleButton.setOnClickListener { toggleScheduleSection() }
         historyButton.setOnClickListener { startActivity(Intent(this, HistoryActivity::class.java)) }
         permissionsButton.setOnClickListener { startActivity(Intent(this, PermissionsActivity::class.java)) }
@@ -75,7 +105,28 @@ class MainActivity : AppCompatActivity() {
         updateUI()
     }
 
+    private fun getParticipantId(): String = participantIdInput.text?.toString()?.trim() ?: ""
+
+    private fun requireParticipantId(): Boolean {
+        if (getParticipantId().isEmpty()) {
+            Toast.makeText(this, getString(R.string.error_no_participant_id), Toast.LENGTH_SHORT).show()
+            participantIdInput.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun updateActionButtonsEnabled() {
+        val hasId = getParticipantId().isNotEmpty()
+        toggleButton.isEnabled = hasId
+        capture1hButton.isEnabled = hasId
+        capture24hButton.isEnabled = hasId
+        scheduleButton.isEnabled = hasId
+        scheduleConfirmButton.isEnabled = hasId
+    }
+
     private fun updateUI() {
+        updateActionButtonsEnabled()
         scope.launch {
             val active = withContext(Dispatchers.IO) {
                 activationManager.getActiveActivation()
@@ -84,10 +135,13 @@ class MainActivity : AppCompatActivity() {
                 statusText.text = getString(R.string.status_active)
                 statusText.setTextColor(getColorCompat(R.color.status_active))
                 toggleButton.text = getString(R.string.action_stop)
+                // Allow stopping even without ID
+                toggleButton.isEnabled = true
             } else {
                 statusText.text = getString(R.string.status_inactive)
                 statusText.setTextColor(getColorCompat(R.color.status_inactive))
                 toggleButton.text = getString(R.string.action_start)
+                updateActionButtonsEnabled()
             }
         }
     }
@@ -101,6 +155,7 @@ class MainActivity : AppCompatActivity() {
                 withContext(Dispatchers.IO) { activationManager.stopActivation() }
                 Toast.makeText(this@MainActivity, getString(R.string.status_inactive), Toast.LENGTH_SHORT).show()
             } else {
+                if (!requireParticipantId()) return@launch
                 withContext(Dispatchers.IO) { activationManager.startActivation() }
                 Toast.makeText(this@MainActivity, getString(R.string.status_active), Toast.LENGTH_SHORT).show()
             }
@@ -108,7 +163,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun startTimedCapture(hours: Int) {
+        if (!requireParticipantId()) return
+        scope.launch {
+            val active = withContext(Dispatchers.IO) {
+                activationManager.getActiveActivation()
+            }
+            if (active != null) {
+                Toast.makeText(this@MainActivity, getString(R.string.status_active), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            val now = System.currentTimeMillis()
+            val endTime = now + hours * 3600_000L
+            withContext(Dispatchers.IO) {
+                activationManager.startTimedActivation(endTime)
+            }
+            val msg = if (hours == 1) R.string.capture_started_1h else R.string.capture_started_24h
+            Toast.makeText(this@MainActivity, getString(msg), Toast.LENGTH_SHORT).show()
+            updateUI()
+        }
+    }
+
     private fun toggleScheduleSection() {
+        // Closing is always allowed; opening requires participant ID
+        if (scheduleSection.visibility != View.VISIBLE && !requireParticipantId()) return
         scheduleSection.visibility =
             if (scheduleSection.visibility == View.VISIBLE) View.GONE else View.VISIBLE
     }
@@ -133,6 +211,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun confirmSchedule() {
+        if (!requireParticipantId()) return
         if (scheduledStartTime == 0L || scheduledEndTime == 0L) {
             Toast.makeText(this, getString(R.string.error_schedule_times), Toast.LENGTH_SHORT).show()
             return

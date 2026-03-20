@@ -98,6 +98,17 @@
     <string name="upload_telegram">Envoyer via Telegram</string>
     <string name="send_telegram">Envoyer via Telegram</string>
 
+    <!-- Participant -->
+    <string name="participant_id_label">Num\u00e9ro de participant</string>
+    <string name="participant_id_hint">Entrez votre num\u00e9ro</string>
+    <string name="error_no_participant_id">Veuillez entrer votre num\u00e9ro de participant</string>
+
+    <!-- Quick capture -->
+    <string name="capture_1h">Capture 1h</string>
+    <string name="capture_24h">Capture 24h</string>
+    <string name="capture_started_1h">Capture 1h d\u00e9marr\u00e9e</string>
+    <string name="capture_started_24h">Capture 24h d\u00e9marr\u00e9e</string>
+
     <!-- General -->
     <string name="cancel">Annuler</string>
     <string name="confirm">Confirmer</string>

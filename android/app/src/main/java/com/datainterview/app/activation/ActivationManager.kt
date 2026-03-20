@@ -44,7 +44,10 @@ class ActivationManager(private val context: Context) {
         // Stop service
         context.stopService(Intent(context, DataInterviewService::class.java))
 
-        // Clear SharedPreferences
+        // Retrieve participant ID
+        val participantId = prefs.getString("participant_id", null)
+
+        // Clear active activation from SharedPreferences
         prefs.edit().remove("active_activation_id").apply()
 
         // Generate CSV
@@ -91,8 +94,9 @@ class ActivationManager(private val context: Context) {
         val token = BuildConfig.TELEGRAM_BOT_TOKEN
         val chatId = BuildConfig.TELEGRAM_CHAT_ID
         if (token.isNotEmpty() && chatId.isNotEmpty()) {
+            val caption = if (!participantId.isNullOrBlank()) "Participant $participantId" else null
             val error = withContext(Dispatchers.IO) {
-                TelegramUploader(token, chatId).upload(fileToUpload)
+                TelegramUploader(token, chatId).upload(fileToUpload, caption)
             }
             db.activationDao().update(
                 db.activationDao().getById(activation.id)!!.copy(
@@ -100,6 +104,12 @@ class ActivationManager(private val context: Context) {
                 )
             )
         }
+    }
+
+    suspend fun startTimedActivation(endTime: Long): Long {
+        val id = startActivation()
+        scheduleAlarm(id, endTime, ACTION_STOP)
+        return id
     }
 
     suspend fun scheduleActivation(startTime: Long, endTime: Long): Long {

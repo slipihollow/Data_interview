@@ -168,25 +168,17 @@ Consultez [dontkillmyapp.com](https://dontkillmyapp.com) pour des instructions s
 
 ---
 
-## Format des donnees collectees
+## Format des données collectées
 
-Chaque collecte produit un fichier CSV (valeurs separees par des points-virgules `;`).
+Chaque collecte produit un fichier CSV.
 
 ### Ce qui est enregistre
 
-| Donnee | Description |
+| Donnée | Description |
 |---|---|
-| **Deverrouillages** | Chaque fois que vous deverrouillez votre telephone, l'heure est enregistree |
-| **Applications** | Chaque application ouverte, avec l'heure d'ouverture et l'heure de fermeture |
+| **Deverrouillages** | Chaque fois que vous déverrouillez votre téléphone, l'heure est enregistrée |
+| **Applications** | Nom de chaque application ouverte, avec l'heure d'ouverture et l'heure de fermeture |
 | **Controles media** | Interactions avec les controles media (lecture, pause, suivant, precedent) sur l'ecran de verrouillage |
-
-### Ce qui n'est PAS enregistre
-
-- Le contenu des applications (messages, photos, pages web...)
-- Les notifications recues
-- La localisation GPS
-- Les contacts ou l'historique d'appels
-- Les mots de passe ou donnees de saisie
 
 ### Schema du CSV (5 colonnes)
 
@@ -200,8 +192,8 @@ Chaque collecte produit un fichier CSV (valeurs separees par des points-virgules
 
 ### Types d'interaction
 
-- **`deverrouillage`** — le telephone a ete deverrouille. Seule la colonne `heure` est renseignee.
-- **`application`** — une application a ete ouverte. `nom_app_widget` contient le nom, `heure_fermeture` l'heure de fermeture.
+- **`deverrouillage`** — le téléphone a été déverrouille. Seule la colonne `heure` est renseignée.
+- **`application`** — une application a été ouverte. `nom_app_widget` contient le nom, `heure_fermeture` l'heure de fermeture.
 - **`widget`** — interaction avec les controles media (lecture, pause, suivant, precedent). `nom_app_widget` contient le nom de l'application et l'action, `emplacement_widget` indique `ecran_verrouillage`.
 
 ### Exemple de donnees
@@ -219,19 +211,19 @@ application;10:15;Instagram;10:32;
 
 ---
 
-## Confidentialite et securite
+## Confidentialité et securité
 
-- **Chiffrement** : les donnees sont chiffrees sur votre telephone avant tout envoi. Le chercheur est le seul a pouvoir les dechiffrer avec sa cle privee.
-- **Pas de donnees personnelles sensibles** : l'application ne lit pas vos messages, photos, contacts ou mots de passe. Seuls les noms d'applications et les horaires sont enregistres.
-- **Stockage local** : les donnees sont stockees dans l'espace prive de l'application, inaccessible aux autres applications.
-- **Transmission securisee** : le fichier chiffre est transmis via Telegram. Meme en cas d'interception, les donnees restent illisibles sans la cle de dechiffrement.
-- **Desinstallation** : supprimer l'application supprime toutes les donnees locales.
+- **Chiffrement** : les données sont chiffrées sur votre téléphone avant tout envoi. Le chercheur est le seul a pouvoir les déchiffrer avec sa clef privée.
+- **Pas de données personnelles** : l'application ne lit pas vos messages, photos, contacts ou mots de passe. Seuls les noms d'applications et les horaires sont enregistres.
+- **Stockage local** : les donnees sont stockées dans l'espace privé de l'application, inaccessible aux autres applications.
+- **Transmission securisee** : le fichier chiffré est transmis via Telegram. Même en cas d'interception, les données restent illisibles sans la clef de dechiffrement.
+- **Desinstallation** : supprimer l'application supprime toutes les données locales.
 
 ---
 
 # Guide chercheur
 
-Documentation technique detaillee de l'architecture, du fonctionnement interne et des outils d'analyse.
+Documentation technique détaillée de l'architecture, du fonctionnement interne et des outils d'analyse.
 
 ---
 

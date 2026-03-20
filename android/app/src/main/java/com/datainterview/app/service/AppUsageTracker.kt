@@ -151,6 +151,6 @@ class AppUsageTracker(
     }
 
     private fun formatTime(millis: Long): String {
-        return SimpleDateFormat("HH:mm", Locale.US).format(Date(millis))
+        return SimpleDateFormat("HH:mm:ss", Locale.US).format(Date(millis))
     }
 }

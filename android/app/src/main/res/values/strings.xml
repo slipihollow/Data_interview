@@ -100,8 +100,13 @@
 
     <!-- Participant -->
     <string name="participant_id_label">Num\u00e9ro de participant</string>
-    <string name="participant_id_hint">Entrez votre num\u00e9ro</string>
+    <string name="participant_id_hint">Entrez votre num\u00e9ro (4 chiffres max)</string>
     <string name="error_no_participant_id">Veuillez entrer votre num\u00e9ro de participant</string>
+    <string name="participant_id_confirm_title">Confirmer votre num\u00e9ro</string>
+    <string name="participant_id_confirm_message">Votre num\u00e9ro de participant est\u00a0: %s\n\nCe num\u00e9ro ne pourra plus \u00eatre modifi\u00e9. Confirmez-vous\u00a0?</string>
+    <string name="participant_id_locked">Num\u00e9ro verrouill\u00e9 \u2014 appui long pour modifier</string>
+    <string name="participant_id_unlock_title">D\u00e9verrouiller le num\u00e9ro\u00a0?</string>
+    <string name="participant_id_unlock_message">Voulez-vous d\u00e9verrouiller le num\u00e9ro de participant pour le modifier\u00a0?</string>
 
     <!-- Quick capture -->
     <string name="capture_1h">Capture 1h</string>

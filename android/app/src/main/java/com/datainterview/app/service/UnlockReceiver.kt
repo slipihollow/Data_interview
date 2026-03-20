@@ -24,7 +24,7 @@ class UnlockReceiver(
             Intent.ACTION_USER_PRESENT -> {
                 // Phone unlocked
                 if (activationId != -1L) {
-                    val time = SimpleDateFormat("HH:mm", Locale.US).format(Date())
+                    val time = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
                     scope.launch {
                         eventDao.insert(
                             Event(

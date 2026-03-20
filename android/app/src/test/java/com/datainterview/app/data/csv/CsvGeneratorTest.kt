@@ -28,7 +28,7 @@ class CsvGeneratorTest {
             Event(
                 activationId = 1,
                 interactionType = "deverrouillage",
-                time = "14:30",
+                time = "14:30:00",
                 appOrWidgetName = null,
                 closeTime = null,
                 widgetLocation = null
@@ -48,9 +48,9 @@ class CsvGeneratorTest {
             Event(
                 activationId = 1,
                 interactionType = "application",
-                time = "14:30",
+                time = "14:30:00",
                 appOrWidgetName = "Spotify",
-                closeTime = "14:45",
+                closeTime = "14:45:00",
                 widgetLocation = null
             )
         )
@@ -67,7 +67,7 @@ class CsvGeneratorTest {
             Event(
                 activationId = 1,
                 interactionType = "widget",
-                time = "14:30",
+                time = "14:30:00",
                 appOrWidgetName = "Spotify",
                 closeTime = null,
                 widgetLocation = "ecran_verrouillage"
@@ -83,9 +83,9 @@ class CsvGeneratorTest {
     fun `multiple events produce multiple rows`() {
         val file = tempFolder.newFile("test.csv")
         val events = listOf(
-            Event(activationId = 1, interactionType = "deverrouillage", time = "14:30", appOrWidgetName = null, closeTime = null, widgetLocation = null),
-            Event(activationId = 1, interactionType = "application", time = "14:30", appOrWidgetName = "Chrome", closeTime = "14:35", widgetLocation = null),
-            Event(activationId = 1, interactionType = "widget", time = "14:36", appOrWidgetName = "Spotify", closeTime = null, widgetLocation = "ecran_verrouillage")
+            Event(activationId = 1, interactionType = "deverrouillage", time = "14:30:00", appOrWidgetName = null, closeTime = null, widgetLocation = null),
+            Event(activationId = 1, interactionType = "application", time = "14:30:00", appOrWidgetName = "Chrome", closeTime = "14:35:00", widgetLocation = null),
+            Event(activationId = 1, interactionType = "widget", time = "14:36:00", appOrWidgetName = "Spotify", closeTime = null, widgetLocation = "ecran_verrouillage")
         )
         CsvGenerator.generateToFile(file, events)
 

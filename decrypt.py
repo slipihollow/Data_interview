@@ -141,14 +141,14 @@ def decrypt(private_key_path: str, enc_path: str) -> None:
         for t_str in [heure, heure_fermeture]:
             if t_str:
                 try:
-                    all_times.append(datetime.strptime(t_str, "%H:%M"))
+                    all_times.append(datetime.strptime(t_str, "%H:%M:%S"))
                 except ValueError:
                     pass
 
         # Track unlocks and sessions
         if interaction == "deverrouillage" and heure:
             try:
-                unlock_time = datetime.strptime(heure, "%H:%M")
+                unlock_time = datetime.strptime(heure, "%H:%M:%S")
                 # Close previous session
                 if current_session_start is not None and current_session_last_time is not None:
                     sess_dur = (current_session_last_time - current_session_start).total_seconds()
@@ -167,8 +167,8 @@ def decrypt(private_key_path: str, enc_path: str) -> None:
         duration_sec = ""
         if heure and heure_fermeture:
             try:
-                t_open = datetime.strptime(heure, "%H:%M")
-                t_close = datetime.strptime(heure_fermeture, "%H:%M")
+                t_open = datetime.strptime(heure, "%H:%M:%S")
+                t_close = datetime.strptime(heure_fermeture, "%H:%M:%S")
                 delta = (t_close - t_open).total_seconds()
                 if delta < 0:
                     delta += 86400
@@ -232,8 +232,8 @@ def decrypt(private_key_path: str, enc_path: str) -> None:
     social_ratio = (social_time / total_app_time * 100) if total_app_time > 0 else 0
 
     # First / last use
-    first_use = min(all_times).strftime("%H:%M") if all_times else "?"
-    last_use = max(all_times).strftime("%H:%M") if all_times else "?"
+    first_use = min(all_times).strftime("%H:%M:%S") if all_times else "?"
+    last_use = max(all_times).strftime("%H:%M:%S") if all_times else "?"
 
     # Total screen time (excluding launcher)
     total_screen_min = total_app_time // 60

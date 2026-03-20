@@ -112,7 +112,7 @@ class MediaTracker private constructor(
                 }
                 val appName =
                     controller.packageName?.let { getAppLabel(it) } ?: "inconnu"
-                val time = SimpleDateFormat("HH:mm", Locale.US).format(Date())
+                val time = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
                 // Media controls on the lock screen
                 val location = "ecran_verrouillage"

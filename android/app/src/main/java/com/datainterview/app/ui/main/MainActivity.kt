@@ -1,10 +1,12 @@
 package com.datainterview.app.ui.main
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
@@ -72,10 +74,16 @@ class MainActivity : AppCompatActivity() {
         scheduleEndButton = findViewById(R.id.scheduleEndButton)
         scheduleConfirmButton = findViewById(R.id.scheduleConfirmButton)
 
-        // Restore saved participant ID
+        // Enforce 4-digit max via InputFilter as well
+        participantIdInput.filters = arrayOf(InputFilter.LengthFilter(4))
+
+        // Restore saved participant ID and lock state
         val savedId = prefs.getString("participant_id", null)
         if (!savedId.isNullOrBlank()) {
             participantIdInput.setText(savedId)
+        }
+        if (prefs.getBoolean("participant_id_locked", false) && !savedId.isNullOrBlank()) {
+            lockParticipantId()
         }
 
         // Save participant ID on change and update button states
@@ -88,6 +96,26 @@ class MainActivity : AppCompatActivity() {
                 updateActionButtonsEnabled()
             }
         })
+
+        // When the field loses focus with a non-empty value that isn't locked yet, ask for confirmation
+        participantIdInput.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && !prefs.getBoolean("participant_id_locked", false)) {
+                val id = getParticipantId()
+                if (id.isNotEmpty()) {
+                    showParticipantIdConfirmation(id)
+                }
+            }
+        }
+
+        // Long-press on the locked field to unlock
+        participantIdInput.setOnLongClickListener {
+            if (prefs.getBoolean("participant_id_locked", false)) {
+                showUnlockConfirmation()
+                true
+            } else {
+                false
+            }
+        }
 
         toggleButton.setOnClickListener { toggleActivation() }
         capture1hButton.setOnClickListener { startTimedCapture(1) }
@@ -198,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                 cal.set(year, month, day, hour, minute, 0)
                 cal.set(Calendar.MILLISECOND, 0)
                 val millis = cal.timeInMillis
-                val formatted = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE).format(cal.time)
+                val formatted = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE).format(cal.time)
                 if (isStart) {
                     scheduledStartTime = millis
                     scheduleStartText.text = formatted
@@ -227,6 +255,41 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, getString(R.string.schedule_confirmed), Toast.LENGTH_SHORT).show()
             scheduleSection.visibility = View.GONE
         }
+    }
+
+    private fun showParticipantIdConfirmation(id: String) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.participant_id_confirm_title))
+            .setMessage(getString(R.string.participant_id_confirm_message, id))
+            .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                prefs.edit().putBoolean("participant_id_locked", true).apply()
+                lockParticipantId()
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+                participantIdInput.text?.clear()
+                participantIdInput.requestFocus()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun lockParticipantId() {
+        participantIdInput.isEnabled = false
+        participantIdInput.alpha = 0.7f
+    }
+
+    private fun showUnlockConfirmation() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.participant_id_unlock_title))
+            .setMessage(getString(R.string.participant_id_unlock_message))
+            .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                prefs.edit().putBoolean("participant_id_locked", false).apply()
+                participantIdInput.isEnabled = true
+                participantIdInput.alpha = 1.0f
+                participantIdInput.requestFocus()
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
     }
 
     private fun getColorCompat(resId: Int): Int {

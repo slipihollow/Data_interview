@@ -92,7 +92,7 @@ class HistoryActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val activation = activations[position]
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE)
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE)
 
             val startStr = dateFormat.format(Date(activation.startTime))
             val endStr = activation.endTime?.let { dateFormat.format(Date(it)) } ?: "..."
@@ -101,7 +101,8 @@ class HistoryActivity : AppCompatActivity() {
             val durationMs = (activation.endTime ?: System.currentTimeMillis()) - activation.startTime
             val hours = durationMs / 3600000
             val minutes = (durationMs % 3600000) / 60000
-            holder.durationText.text = "${hours}h ${minutes}min"
+            val seconds = (durationMs % 60000) / 1000
+            holder.durationText.text = "${hours}h ${minutes}m ${seconds}s"
 
             holder.eventCountText.text = "${activation.eventCount} \u00e9v\u00e9nements"
 

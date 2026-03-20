@@ -1,0 +1,38 @@
+# === DIGITAL SOBRIETY REPORT ===
+#
+# Total screen time: 94m00s
+# First use: 08:30 | Last use: 14:10
+#
+# --- Unlock behavior ---
+# Unlock count: 3
+# Avg time between unlocks: 165m00s
+# Quick checks (<=30s): 0/3 sessions
+#
+# --- Session patterns ---
+# Total sessions: 3
+# Avg session duration: 32m20s
+# Avg app switches/session: 1.7
+#
+# --- Social media ---
+# Social media time: 54m00s (57% of screen time)
+#   Instagram: 1x, 27m00s  (com.instagram.android)
+#   WhatsApp: 1x, 17m00s  (com.whatsapp)
+#   Twitter/X: 1x, 10m00s  (com.twitter.android)
+#
+# --- App usage (by time) ---
+# Instagram;1x;27m00s  (com.instagram.android)
+# YouTube;1x;25m00s  (com.google.android.youtube)
+# WhatsApp;1x;17m00s  (com.whatsapp)
+# Chrome;1x;15m00s  (com.android.chrome)
+# Twitter/X;1x;10m00s  (com.twitter.android)
+#
+type_interaction;heure;nom_app_widget;heure_fermeture;emplacement_widget;duree_secondes
+deverrouillage;08:30;;;;
+application;08:30;com.android.chrome;08:45;;900
+application;08:45;com.instagram.android;09:12;;1620
+widget;08:50;Spotify (lecture);;ecran_verrouillage;
+deverrouillage;10:15;;;;
+application;10:15;com.whatsapp;10:32;;1020
+application;10:35;com.google.android.youtube;11:00;;1500
+deverrouillage;14:00;;;;
+application;14:00;com.twitter.android;14:10;;600

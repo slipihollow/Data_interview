@@ -8,9 +8,9 @@ data class Event(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val activationId: Long,
     val interactionType: String,  // "deverrouillage", "application", "widget"
-    val time: String,             // HH:MM format
+    val time: String,             // HH:MM:SS format
     val appOrWidgetName: String?, // app name or widget name
-    val closeTime: String?,       // HH:MM for app close, null for unlocks
+    val closeTime: String?,       // HH:MM:SS for app close, null for unlocks
     val widgetLocation: String?,  // "ecran_verrouillage", "ecran_accueil", null
     val timestampMillis: Long = System.currentTimeMillis() // for ordering
 )

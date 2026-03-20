@@ -42,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/participant_id_hint"
                 android:inputType="number"
+                android:maxLength="4"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>

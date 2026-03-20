@@ -7,7 +7,11 @@ Usage:
 Requires: pip install cryptography
 """
 import argparse
+import csv
+import io
 import struct
+from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 from cryptography.hazmat.primitives.asymmetric import padding
@@ -59,8 +63,6 @@ def decrypt(private_key_path: str, enc_path: str) -> None:
     header = lines[0]
     rows = lines[1:]
 
-    from collections import defaultdict
-    from datetime import datetime
 
     # Friendly display names for known packages
     FRIENDLY_NAMES = {
@@ -279,11 +281,22 @@ def decrypt(private_key_path: str, enc_path: str) -> None:
         summary_lines.append(f"# {friendly(app)};{stats['count']}x;{fmt_duration(stats['total_seconds'])}  ({app})")
     summary_lines.append("#")
 
-    # Write output
-    out_path = Path(enc_path).with_suffix(".csv")
-    output = "\n".join(summary_lines + [header] + processed_rows) + "\n"
-    out_path.write_text(output)
-    print(f"Decrypted: {out_path}")
+    # --- Excel CSV (semicolon-delimited, UTF-8 BOM, with summary report) ---
+    excel_path = Path(enc_path).with_suffix(".csv")
+    excel_output = "\n".join(summary_lines + [header] + processed_rows) + "\n"
+    excel_path.write_bytes(b"\xef\xbb\xbf" + excel_output.encode("utf-8"))
+    print(f"Excel CSV: {excel_path}")
+
+    # --- R CSV (comma-delimited, no comments, clean data only) ---
+    r_path = Path(enc_path).with_name(Path(enc_path).stem + "_R.csv")
+    r_buf = io.StringIO()
+    writer = csv.writer(r_buf)
+    writer.writerow(header.split(";"))
+    for row in processed_rows:
+        writer.writerow(row.split(";"))
+    r_path.write_text(r_buf.getvalue(), encoding="utf-8")
+    print(f"R CSV:     {r_path}")
+    print(f"  R usage: df <- read.csv(\"{r_path.name}\")")
 
 
 if __name__ == "__main__":

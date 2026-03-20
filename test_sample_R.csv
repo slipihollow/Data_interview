@@ -1,0 +1,10 @@
+type_interaction,heure,nom_app_widget,heure_fermeture,emplacement_widget,duree_secondes
+deverrouillage,08:30,,,,
+application,08:30,com.android.chrome,08:45,,
+application,08:45,com.instagram.android,09:12,,
+widget,08:50,Spotify (lecture),,ecran_verrouillage,
+deverrouillage,10:15,,,,
+application,10:15,com.whatsapp,10:32,,
+application,10:35,com.google.android.youtube,11:00,,
+deverrouillage,14:00,,,,
+application,14:00,com.twitter.android,14:10,,

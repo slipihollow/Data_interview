@@ -2,7 +2,7 @@
 
 Application Android conçue comme un outil de collecte de données pour le suivi passif des interactions smartphone-utilisateur dans le cadre d'une thèse en psychologie sociale de l'Université de Lausanne.
 
-Elle enregistre les déverrouillages, l'utilisation des applications et les interactions avec les controles media, puis génère un fichier CSV chiffré par periode d'activation, envoyé automatiquement à l'équipe de recherche via Telegram.
+Elle enregistre les déverrouillages, l'ouverture et fermeture des applications, ainsi que les interactions avec les controles media, puis génère un fichier CSV chiffré par periode d'activation, envoyé automatiquement à l'équipe de recherche via Telegram.
 
 > **Note :** Ce projet est en cours de développement. L'application n'est destinée à aucune utilisation en dehors de tests internes pour le moment.
 

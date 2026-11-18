@@ -9,6 +9,8 @@ import android.os.Looper
 import com.datainterview.app.data.dao.EventDao
 import com.datainterview.app.data.entity.Event
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -23,8 +25,10 @@ class AppUsageTracker(
     private var activationId: Long = -1L
     private var running = false
     private var lastForegroundApp: String? = null
-    private var lastForegroundTime: Long = 0
     private var lastPollTime: Long = System.currentTimeMillis()
+
+    /** Row id of the currently open "application" event, awaited when it closes. */
+    private var openEventId: Deferred<Long>? = null
 
     companion object {
         private const val POLL_INTERVAL_MS = 5000L // 5 seconds
@@ -48,9 +52,10 @@ class AppUsageTracker(
     fun stop() {
         running = false
         handler.removeCallbacks(pollRunnable)
-        // Log close event for currently foreground app
-        lastForegroundApp?.let { app ->
-            logAppClose(app, lastForegroundTime)
+        // Complete the row for the app still in foreground. No usage event exists
+        // here, so "now" is the correct close time: collection ends at this moment.
+        if (lastForegroundApp != null) {
+            logAppClose(System.currentTimeMillis())
         }
         lastForegroundApp = null
     }
@@ -86,19 +91,18 @@ class AppUsageTracker(
             if (isForeground) {
                 val packageName = event.packageName
                 if (packageName != lastForegroundApp) {
-                    // Close previous app
-                    lastForegroundApp?.let { prevApp ->
-                        logAppClose(prevApp, lastForegroundTime)
+                    // Close previous app: it left the foreground when this one entered
+                    if (lastForegroundApp != null) {
+                        logAppClose(event.timeStamp)
                     }
                     // Open new app
                     lastForegroundApp = packageName
-                    lastForegroundTime = event.timeStamp
                     logAppOpen(packageName, event.timeStamp)
                 }
             } else if (isBackground) {
                 val packageName = event.packageName
                 if (packageName == lastForegroundApp) {
-                    logAppClose(packageName, lastForegroundTime)
+                    logAppClose(event.timeStamp)
                     lastForegroundApp = null
                 }
             }
@@ -108,35 +112,35 @@ class AppUsageTracker(
     private fun logAppOpen(packageName: String, timestamp: Long) {
         val appName = getAppLabel(packageName)
         val time = formatTime(timestamp)
-        scope.launch {
+        openEventId = scope.async {
             eventDao.insert(
                 Event(
                     activationId = activationId,
                     interactionType = "application",
                     time = time,
                     appOrWidgetName = appName,
-                    closeTime = null, // will be updated on close
+                    closeTime = null, // completed by logAppClose
                     widgetLocation = null
                 )
             )
         }
     }
 
-    private fun logAppClose(packageName: String, openTimestamp: Long) {
-        val appName = getAppLabel(packageName)
-        val openTime = formatTime(openTimestamp)
-        val closeTime = formatTime(System.currentTimeMillis())
+    /**
+     * Completes the open row for the current foreground app. [timestamp] must be
+     * the time the app actually left the foreground (the usage event's own
+     * timestamp), not the poll time — polling runs every 5s, so using the poll
+     * time would push every close up to 5s late and overlap the next row.
+     *
+     * Does nothing if no open row exists (e.g. the app was already in foreground
+     * when collection started), so no orphan row is created.
+     */
+    private fun logAppClose(timestamp: Long) {
+        val pending = openEventId ?: return
+        openEventId = null
+        val closeTime = formatTime(timestamp)
         scope.launch {
-            eventDao.insert(
-                Event(
-                    activationId = activationId,
-                    interactionType = "application",
-                    time = openTime,
-                    appOrWidgetName = appName,
-                    closeTime = closeTime,
-                    widgetLocation = null
-                )
-            )
+            eventDao.updateCloseTime(pending.await(), closeTime)
         }
     }
 

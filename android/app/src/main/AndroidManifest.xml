@@ -31,6 +31,19 @@
         android:name="android.permission.SCHEDULE_EXACT_ALARM"
         tools:targetApi="31" />
 
+    <!--
+        Package visibility (API 30+). Without this, getApplicationInfo() throws
+        NameNotFoundException for every app the participant uses, and both
+        trackers silently fall back to raw package names (com.reddit.frontpage
+        instead of Reddit). A <queries> element cannot replace this: the apps a
+        participant uses are unknown at build time and cannot be enumerated.
+        Play Store policy restricts this permission, but the app is distributed
+        as a sideloaded APK for research, not via the Play Store.
+    -->
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
     <application
         android:name=".DataInterviewApp"
         android:allowBackup="true"

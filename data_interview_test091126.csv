@@ -1,0 +1,142 @@
+﻿# === DIGITAL SOBRIETY REPORT ===;;;;;
+#;;;;;
+# Total screen time: 17m32s;;;;;
+# First use: 14:15:00 | Last use: 15:12:25;;;;;
+#;;;;;
+# --- Unlock behavior ---;;;;;
+# Unlock count: 6;;;;;
+# Avg time between unlocks: 11m05s;;;;;
+# Quick checks (<=30s): 2/6 sessions;;;;;
+#;;;;;
+# --- Session patterns ---;;;;;
+# Total sessions: 6;;;;;
+# Avg session duration: 3m06s;;;;;
+# Avg app switches/session: 1.8;;;;;
+#;;;;;
+# --- Social media ---;;;;;
+# Social media time: 4m19s (25% of screen time);;;;;
+#   Reddit: 3x, 3m15s  (com.reddit.frontpage);;;;;
+#   Messenger: 3x, 0m34s  (com.facebook.orca);;;;;
+#   Telegram: 1x, 0m30s  (org.telegram.messenger);;;;;
+#;;;;;
+# --- App usage (by time) ---;;;;;
+# Camera;4x;10m25s  (com.hmdglobal.app.camera);;;
+# Reddit;3x;3m15s  (com.reddit.frontpage);;;
+# Iam;4x;0m44s  (com.hrd.iam);;;
+# Messenger;3x;0m34s  (com.facebook.orca);;;
+# Telegram;1x;0m30s  (org.telegram.messenger);;;
+# Google Photos;3x;0m29s  (com.google.android.apps.photos);;;
+# Migraineapp;2x;0m23s  (com.healint.migraineapp);;;
+# Deskclock;2x;0m22s  (com.google.android.deskclock);;;
+# Keep;2x;0m18s  (com.google.android.keep);;;
+# B2c;1x;0m18s  (ch.sbb.mobile.android.b2c);;;
+# Google Calendar;2x;0m13s  (com.google.android.calendar);;;
+# Googlequicksearchbox;1x;0m01s  (com.google.android.googlequicksearchbox);;;
+#;;;;;
+type_interaction;heure;nom_app_widget;heure_fermeture;emplacement_widget;duree_secondes
+application;14:15:00;com.android.launcher3;;;
+application;14:15:00;com.android.launcher3;14:15:20;;20
+application;14:15:17;com.google.android.apps.photos;;;
+application;14:15:17;com.google.android.apps.photos;14:15:25;;8
+application;14:15:22;com.android.launcher3;;;
+application;14:15:22;com.android.launcher3;14:15:35;;13
+application;14:15:31;com.google.android.keep;;;
+application;14:15:31;com.google.android.keep;14:15:35;;4
+application;14:15:31;com.google.android.keep;;;
+application;14:15:31;com.google.android.keep;14:15:45;;14
+application;14:15:43;com.android.launcher3;;;
+application;14:15:43;com.android.launcher3;14:15:45;;2
+application;14:15:45;com.google.android.apps.photos;;;
+application;14:15:45;com.google.android.apps.photos;14:15:55;;10
+application;14:15:53;com.android.launcher3;;;
+application;14:15:53;com.android.launcher3;14:16:15;;22
+application;14:16:14;com.google.android.apps.photos;;;
+application;14:16:14;com.google.android.apps.photos;14:16:25;;11
+application;14:16:22;com.android.launcher3;;;
+application;14:16:22;com.android.launcher3;14:16:30;;8
+application;14:16:26;com.google.android.calendar;;;
+application;14:16:26;com.google.android.calendar;14:16:30;;4
+application;14:16:26;com.google.android.calendar;;;
+application;14:16:26;com.google.android.calendar;14:16:35;;9
+application;14:16:31;com.android.launcher3;;;
+application;14:16:31;com.android.launcher3;14:16:35;;4
+deverrouillage;14:16:57;;;;
+application;14:16:57;com.android.launcher3;;;
+application;14:16:57;com.android.launcher3;14:17:00;;3
+application;14:16:59;com.google.android.googlequicksearchbox;;;
+application;14:16:59;com.google.android.googlequicksearchbox;14:17:00;;1
+application;14:17:00;com.android.launcher3;;;
+application;14:17:00;com.android.launcher3;14:17:55;;55
+application;14:18:43;com.hmdglobal.app.camera;;;
+application;14:18:43;com.hmdglobal.app.camera;14:18:48;;5
+application;14:18:44;com.hmdglobal.app.camera;;;
+application;14:18:44;com.hmdglobal.app.camera;14:24:28;;344
+application;14:24:27;com.android.launcher3;;;
+application;14:24:27;com.android.launcher3;14:24:28;;1
+deverrouillage;14:24:33;;;;
+application;14:24:33;com.android.launcher3;;;
+application;14:24:33;com.android.launcher3;14:24:48;;15
+application;14:24:45;ch.sbb.mobile.android.b2c;;;
+application;14:24:45;ch.sbb.mobile.android.b2c;14:25:03;;18
+application;14:25:00;com.android.launcher3;;;
+application;14:25:00;com.android.launcher3;14:25:03;;3
+application;14:25:02;com.reddit.frontpage;;;
+application;14:25:02;com.reddit.frontpage;14:27:24;;142
+application;14:27:21;com.reddit.frontpage;;;
+application;14:27:21;com.reddit.frontpage;14:28:04;;43
+application;14:27:59;com.reddit.frontpage;;;
+application;14:27:59;com.reddit.frontpage;14:28:09;;10
+application;14:28:04;com.android.launcher3;;;
+application;14:28:04;com.android.launcher3;14:28:09;;5
+application;14:28:08;com.hrd.iam;;;
+application;14:28:08;com.hrd.iam;14:28:14;;6
+application;14:28:13;com.hrd.iam;;;
+application;14:28:13;com.hrd.iam;14:28:19;;6
+application;14:28:16;com.hrd.iam;;;
+application;14:28:16;com.hrd.iam;14:28:29;;13
+application;14:28:25;com.hrd.iam;;;
+application;14:28:25;com.hrd.iam;14:28:44;;19
+application;14:28:40;com.android.launcher3;;;
+application;14:28:40;com.android.launcher3;14:28:49;;9
+application;14:28:48;com.facebook.orca;;;
+application;14:28:48;com.facebook.orca;14:29:04;;16
+application;14:29:03;com.facebook.orca;;;
+application;14:29:03;com.facebook.orca;14:29:04;;1
+application;14:29:03;com.facebook.orca;;;
+application;14:29:03;com.facebook.orca;14:29:20;;17
+application;14:29:15;com.android.launcher3;;;
+application;14:29:15;com.android.launcher3;14:29:20;;5
+application;14:29:18;com.android.launcher3;;;
+application;14:29:18;com.android.launcher3;14:29:20;;2
+application;14:29:19;com.hmdglobal.app.camera;;;
+application;14:29:19;com.hmdglobal.app.camera;14:29:20;;1
+application;14:29:19;com.hmdglobal.app.camera;;;
+application;14:29:19;com.hmdglobal.app.camera;14:33:54;;275
+application;14:33:50;com.android.launcher3;;;
+application;14:33:50;com.android.launcher3;14:33:59;;9
+application;14:33:55;com.android.launcher3;;;
+application;14:33:55;com.android.launcher3;14:33:59;;4
+deverrouillage;14:34:01;;;;
+application;14:34:01;com.android.launcher3;;;
+application;14:34:01;com.android.launcher3;14:34:09;;8
+deverrouillage;14:54:05;;;;
+application;14:54:04;com.healint.migraineapp;;;
+application;14:54:04;com.healint.migraineapp;14:54:08;;4
+application;14:54:04;com.healint.migraineapp;;;
+application;14:54:04;com.healint.migraineapp;14:54:23;;19
+application;14:54:18;com.android.launcher3;;;
+application;14:54:18;com.android.launcher3;14:54:23;;5
+application;14:54:21;com.google.android.deskclock;;;
+application;14:54:21;com.google.android.deskclock;14:54:36;;15
+deverrouillage;15:11:23;;;;
+application;15:11:23;com.google.android.deskclock;;;
+application;15:11:23;com.google.android.deskclock;15:11:30;;7
+application;15:11:27;com.android.launcher3;;;
+application;15:11:27;com.android.launcher3;15:11:45;;18
+application;15:11:40;org.telegram.messenger;;;
+application;15:11:40;org.telegram.messenger;15:12:10;;30
+application;15:12:07;com.android.launcher3;;;
+application;15:12:07;com.android.launcher3;15:12:20;;13
+deverrouillage;15:12:22;;;;
+application;15:12:21;com.android.launcher3;;;
+application;15:12:21;com.android.launcher3;15:12:25;;4
